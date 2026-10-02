@@ -1,0 +1,13 @@
+{
+  "name": "grimpoteuthis-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "烟灰蛸的游戏策划与绘画作品集网站",
+  "license": "MIT",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "build": "node build-local-release.cjs",
+    "start": "node serve-local.js",
+    "check": "node scripts/check-release.cjs"
+  }
+}

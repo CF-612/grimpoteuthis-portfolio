@@ -1,0 +1,14 @@
+const fs=require('node:fs');const path=require('node:path');const vm=require('node:vm');
+const root=__dirname;const scope={window:{}};vm.runInNewContext(fs.readFileSync(path.join(root,'data.js'),'utf8'),scope);
+const data=scope.window.portfolioData;const esc=s=>String(s??'待核对').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let html=fs.readFileSync(path.join(root,'index-v2.html'),'utf8');
+html=html.replace(/<div class="baseline-games">[\s\S]*?<\/div><!-- baseline-games-end -->/,'');
+html=html.replace(/<div class="baseline-gallery">[\s\S]*?<\/div><!-- baseline-gallery-end -->/,'');
+const gameList='<div class="baseline-games">'+data.games.map(g=>'<article><h3>'+esc(g.name)+'</h3><p>'+esc(g.summary)+'</p><p>我的角色：'+esc(g.role)+'　团队规模：'+esc(g.team)+'　引擎 / 平台：'+esc(g.platform)+'</p>'+(g.link?'<a href="'+esc(g.link)+'">查看作品 ↗</a>':'')+'</article>').join('')+'</div><!-- baseline-games-end -->';
+const artList='<div class="baseline-gallery">'+data.arts.map(a=>'<a href="'+a.original+'"><img loading="lazy" width="360" height="260" src="'+a.thumb+'" alt="'+esc(a.name)+'"><span>'+esc(a.name)+'</span></a>').join('')+'</div><!-- baseline-gallery-end -->';
+html=html.replace('<section class="games section"','<section class="games section"');
+if(html.split('<div class="archive">').length!==2||html.split('<div class="gallery-stage">').length!==2)throw new Error('Missing or duplicate static baseline insertion points');
+html=html.replace('<div class="archive">',gameList+'<div class="archive">');
+html=html.replace('<div class="gallery-stage">',artList+'<div class="gallery-stage">');
+fs.writeFileSync(path.join(root,'index.html'),html);
+console.log('Static baseline includes 6 project records and 12 links to original artwork.');

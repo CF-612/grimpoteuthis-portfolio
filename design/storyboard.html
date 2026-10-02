@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>烟灰蛸 · 水流开场分镜</title><link rel="stylesheet" href="intro.css?v=21"><script defer src="intro-flow.js?v=21"></script><script defer src="intro.js?v=21"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;padding:32px 5%;background:#fff9f0;color:#745568;font:14px/1.7 'Microsoft YaHei',sans-serif}h1{font-size:24px;font-weight:500;margin:0 0 8px}p{margin:4px 0 18px;color:#95788a}a{color:inherit}.controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:18px 0}button,select,input{font:inherit;color:inherit}button,select{padding:7px 16px;background:#fffdf8;border:1px solid #c8aebe;border-radius:20px;cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #94749b;outline-offset:3px}input[type=number]{width:80px;padding:6px;border:1px solid #c8aebe;border-radius:6px;background:#fffdf8}input[type=range]{width:min(350px,70vw);accent-color:#b77c9a}.stage{position:relative;aspect-ratio:16/9;max-height:62vh;max-width:1100px;margin:auto;overflow:hidden;border:1px solid #dfc8d3;border-radius:12px;background:#edced9}.stage.portrait{aspect-ratio:9/16;max-height:none;width:min(360px,100%)}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin:28px 0}.frame{position:relative;aspect-ratio:16/10;overflow:hidden;border:1px solid #dfc8d3;border-radius:8px}.caption{font-size:12px;margin-top:8px}.frame .intro-quote{font-size:11px}.frame .intro-result .intro-latin{font-size:6vw}output{min-width:130px;font-variant-numeric:tabular-nums}@media(max-width:700px){body{padding:22px 5%}.grid{grid-template-columns:repeat(2,1fr);gap:12px}.frame .intro-quote{font-size:8px}.stage{max-height:none}.controls{gap:8px}.controls button,.controls select{padding:6px 12px}}
+</style></head><body><h1>水流开场 · v21</h1><p>按原画分镜重制：细流落下，逐股扩宽汇合，铺满粉色，纯白人物与层云向下掠过，露出头图。总时长约4.4秒。</p>
+<div class="controls"><button id="play">播放</button><button id="pause">暂停</button><button id="reset">重置</button><label>速度 <select id="speed"><option value="1">正常速度</option><option value="0.25">四分之一速度</option></select></label><label>画幅 <select id="format"><option value="landscape">横屏</option><option value="portrait">竖屏</option></select></label><a href="/?v=21&intro=1#hero">在首页重播 ↗</a></div>
+<div class="stage" id="stage"></div>
+<div class="controls"><label>时间（秒） <input id="time" type="number" min="0" max="4.4" step="0.01" value="0"></label><input id="timeline" type="range" min="0" max="4.4" step="0.01" value="0" aria-label="开场时间轴"><output id="status">0.00 / 4.40 · 文字</output></div>
+<div class="grid">
+<article><div class="frame" data-time="0.25"></div><div class="caption">① 文字留白 · 0.25s</div></article>
+<article><div class="frame" data-time="0.88"></div><div class="caption">② 少量细流先落下 · 0.88s</div></article>
+<article><div class="frame" data-time="1.32"></div><div class="caption">③ 后续水流加入并汇合 · 1.32s</div></article>
+<article><div class="frame" data-time="2.1"></div><div class="caption">④ 水幕自然铺满 · 2.10s</div></article>
+<article><div class="frame" data-time="2.95"></div><div class="caption">⑤ 纯白人物穿过层云 · 2.95s</div></article>
+<article><div class="frame" data-time="3.98"></div><div class="caption">⑥ 露出头图 · 3.98s</div></article>
+</div>
+<script>
+addEventListener('DOMContentLoaded',()=>{
+ const host=document.getElementById('stage'),time=document.getElementById('time'),timeline=document.getElementById('timeline'),status=document.getElementById('status');
+ let player,frames=[],raf=0,t=0,last=0;
+ function show(){player.render(t);time.value=t.toFixed(2);timeline.value=t;status.value=t.toFixed(2)+' / 4.40 · '+player.layer.dataset.phase;}
+ function pause(){cancelAnimationFrame(raf);raf=0;}
+ function rebuild(){pause();if(player)player.remove();frames.forEach(f=>f.remove());player=PortfolioIntro.mount(host,{contained:true,showResult:true});frames=[...document.querySelectorAll('.frame')].map(el=>{const f=PortfolioIntro.mount(el,{contained:true,showResult:true});f.render(Number(el.dataset.time));return f;});show();}
+ function tick(now){t=Math.min(4.4,t+(now-last)/1000*Number(document.getElementById('speed').value));last=now;show();if(t<4.4)raf=requestAnimationFrame(tick);else raf=0;}
+ document.getElementById('play').onclick=()=>{pause();if(t>=4.4)t=0;last=performance.now();raf=requestAnimationFrame(tick);};
+ document.getElementById('pause').onclick=pause;
+ document.getElementById('reset').onclick=()=>{pause();t=0;show();};
+ for(const el of [time,timeline])el.addEventListener('input',()=>{pause();t=Math.max(0,Math.min(4.4,Number(el.value)||0));show();});
+ document.getElementById('format').onchange=e=>{host.classList.toggle('portrait',e.target.value==='portrait');rebuild();};
+ let pending;addEventListener('resize',()=>{clearTimeout(pending);pending=setTimeout(rebuild,100);});
+ rebuild();
+});
+</script></body></html>
