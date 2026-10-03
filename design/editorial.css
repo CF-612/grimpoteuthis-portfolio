@@ -206,6 +206,9 @@ footer > a:last-child { border-bottom: 1px solid #d5b3aa66; padding-bottom: 5px;
 .archive-tabs > .folder-choice { pointer-events: none; }
 .folder-choice svg > path { pointer-events: visiblePainted; }
 .folder-choice .folder-tab-group { pointer-events: none; }
+.octopus-watermark { aspect-ratio: 930 / 800; mask: url('assets/authored/octopus-outline.png') center / contain no-repeat; pointer-events: none; }
+.folder-mascot { position: absolute; left: -4%; top: 145px; width: 70%; background: #688ca2; opacity: .22; transform: rotate(55deg); }
+.profile-mascot { position: absolute; right: 16px; bottom: 42px; width: 48%; max-width: 260px; background: #a88bad; opacity: .12; transform: rotate(-8deg); z-index: -1; }
 
 /* v16: authored layers share their original canvas; bubbles sit between them. */
 .about .authored-window, .about .authored-portrait {
@@ -303,6 +306,8 @@ footer > a:last-child { border-bottom: 1px solid #d5b3aa66; padding-bottom: 5px;
 .mailbox-hint { color: #94728f; font-size: 24px; }
 .mail-message { width: 385px; flex: 0 1 385px; padding: 31px 28px 25px; border: 1px solid #c4aebf; border-radius: 4px 18px 18px 18px; background: repeating-linear-gradient(0deg,transparent 0,transparent 29px,#c6b5c316 29px,#c6b5c316 30px),#fffaf1; box-shadow: 5px 6px 0 #e2ceda80,0 18px 40px #78556f12; }
 .mail-message::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; border-radius: 4px 0 0 18px; background: repeating-linear-gradient(145deg,#b7cbd1 0,#b7cbd1 10px,#fffaf1 10px,#fffaf1 18px,#d4a8bd 18px,#d4a8bd 28px,#fffaf1 28px,#fffaf1 36px); }
+.mail-message { overflow: hidden; isolation: isolate; }
+.mail-mascot { position: absolute; right: -48px; bottom: -66px; width: 78%; background: #ad7e98; opacity: .16; transform: rotate(-8deg); z-index: -1; }
 .mail-message-tail { display: none; }
 .mail-message > .letter-kicker:first-of-type { display: block; transform: none; font: 8px/1.5 Georgia,serif; color: #ab91a0; letter-spacing: .22em; margin-bottom: 19px; }
 .letter-title { display: block; font: 25px/1.4 Brush,serif; color: #80667f; }
@@ -413,7 +418,7 @@ footer > a:last-child { border-bottom: 1px solid #d5b3aa66; padding-bottom: 5px;
 
 /* Direct project links and a draggable, spacious artwork arc. */
 .game-title-link { position: relative; display: inline-block; isolation: isolate; color: inherit; text-decoration: none; }
-.game-title-link::before { content: ''; position: absolute; z-index: -1; inset: -.06em -.3em; border-radius: 50%; background: #e4c8d766; opacity: 0; transform: scaleX(.85); transition: opacity .2s, transform .2s; }
+.game-title-link::before { content: ''; position: absolute; z-index: -1; inset: -.06em -.3em; border-radius: 999px; background: #e4c8d766; opacity: 0; transform: scaleX(.85); transition: opacity .2s, transform .2s; }
 .game-title-link:hover::before, .game-title-link:focus-visible::before { opacity: 1; transform: scaleX(1); }
 .game-title-link:focus-visible { outline: 2px solid #a67d99; outline-offset: 6px; border-radius: 8px; }
 a.game-image { display: flex; text-decoration: none; }
