@@ -62,7 +62,7 @@ window.portfolioData = {
       "role": "美术 & 策划",
       "team": "4人团队",
       "platform": "Unity",
-      "summary": "腾讯游戏高校极限开发赛事作品，围绕反套路经营玩法展开。",
+      "summary": "扮演魔王麾下的怪物黑心工厂厂长，生产劣质装备来拖垮勇者。",
       "cover": "assets/games/arsenal.webp",
       "link": "games/arsenal.html",
       "tags": [
@@ -121,10 +121,10 @@ window.portfolioData = {
     {
       "id": "art-05",
       "name": "离灯",
-      "file": "离灯.png",
-      "thumb": "assets/thumbs/art-05.webp",
-      "stage": "assets/stage/art-05.webp",
-      "original": "assets/originals/art-05.webp"
+      "file": "立绘.png",
+      "thumb": "assets/thumbs/art-05-v35.webp",
+      "stage": "assets/stage/art-05-v35.webp",
+      "original": "assets/originals/art-05-v35.webp"
     },
     {
       "id": "art-06",
