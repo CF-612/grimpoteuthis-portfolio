@@ -6,10 +6,13 @@ window.portfolioData = {
       "role": "策划 & 美术",
       "team": "3人团队",
       "platform": "TapTap",
-      "genre": "生存 / 潜行",
       "summary": "扮演桌面上的新建文件夹，躲避鼠标清理，吞噬软件获得能力。",
       "link": "games/folder.html",
-      "cover": "assets/games/folder.webp"
+      "cover": "assets/games/folder.webp",
+      "tags": [
+        "生存",
+        "潜行"
+      ]
     },
     {
       "id": "nothing",
@@ -17,10 +20,13 @@ window.portfolioData = {
       "role": "策划 & 美术",
       "team": "3人团队",
       "platform": "TapTap",
-      "genre": "益智 / 物理解谜",
       "summary": "在房东查房前，利用家具堆叠、视角遮挡与胶带掩盖房间里的异常。",
       "link": "games/nothing.html",
-      "cover": "assets/games/nothing.webp"
+      "cover": "assets/games/nothing.webp",
+      "tags": [
+        "益智",
+        "物理解谜"
+      ]
     },
     {
       "id": "rabbit",
@@ -28,10 +34,13 @@ window.portfolioData = {
       "role": "独立全栈开发",
       "team": "个人项目",
       "platform": "Unity",
-      "genre": "2D 横版平台",
       "summary": "一只兔兔通过跳跃、啃咬和探索，在巨人的世界里寻找回家的路。",
       "link": "games/rabbit.html",
-      "cover": "assets/games/rabbit.webp"
+      "cover": "assets/games/rabbit.webp",
+      "tags": [
+        "2D",
+        "横版平台"
+      ]
     },
     {
       "id": "jiangnan",
@@ -39,10 +48,13 @@ window.portfolioData = {
       "role": "主策 & 队长",
       "team": "6人团队",
       "platform": "Unity 2D",
-      "genre": "修复 / 科普",
       "summary": "采集、合成并修复江南建筑，在猫猫居民的讲述中了解古建知识。",
       "cover": "assets/games/jiangnan.webp",
-      "link": "games/jiangnan.html"
+      "link": "games/jiangnan.html",
+      "tags": [
+        "修复",
+        "科普"
+      ]
     },
     {
       "id": "arsenal",
@@ -50,10 +62,12 @@ window.portfolioData = {
       "role": "美术 & 策划",
       "team": "4人团队",
       "platform": "Unity",
-      "genre": "反套路经营",
       "summary": "腾讯游戏高校极限开发赛事作品，围绕反套路经营玩法展开。",
       "cover": "assets/games/arsenal.webp",
-      "link": "games/arsenal.html"
+      "link": "games/arsenal.html",
+      "tags": [
+        "反套路经营"
+      ]
     },
     {
       "id": "light",
@@ -61,10 +75,12 @@ window.portfolioData = {
       "role": "人物美术",
       "team": "10+人团队",
       "platform": "Unity",
-      "genre": "冒险",
       "summary": "在失去光明的世界里，遇见离灯。Bunana 小队的 Unity 冒险游戏，我负责人物美术。",
       "cover": "assets/games/light.webp",
-      "link": "games/light.html"
+      "link": "games/light.html",
+      "tags": [
+        "冒险"
+      ]
     }
   ],
   "arts": [
