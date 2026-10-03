@@ -394,7 +394,7 @@ footer > a:last-child { border-bottom: 1px solid #d5b3aa66; padding-bottom: 5px;
 
 .folder-choice.active .folder-front{stroke:#775a71;stroke-width:2.4}.folder-choice.active .folder-label{color:#62455e;text-shadow:0 1px #ffffff66;text-decoration:underline;text-decoration-color:#775a718c;text-decoration-thickness:2px;text-underline-offset:6px}.folder-choice.active .folder-tab-group>path:first-child{stroke:#fffaf0;opacity:1;stroke-width:3}
 .archive-tabs>.folder-choice{translate:0 0;transition:translate .3s ease}
-.archive-tabs>.folder-choice.active{translate:0 -8px}
+.archive-tabs>.folder-choice.active{translate:0 -24px}
 @media(prefers-reduced-motion:reduce){.archive-tabs>.folder-choice{transition:none}}
 .gallery{background:radial-gradient(ellipse at 18% 30%,#f4e7b754,transparent 36%),radial-gradient(ellipse at 82% 50%,#d8cfea66,transparent 45%),linear-gradient(#f7ede9,#fff9ee 36%,#f7e8e5 84%,#f6e6da)}
 .gallery-stage:before{content:'';position:absolute;inset:-8% -4% -14%;z-index:-1;pointer-events:none;background-image:radial-gradient(#b496a54d .8px,transparent .9px);background-size:23px 23px;mask-image:radial-gradient(ellipse,#0008,transparent 68%)}
