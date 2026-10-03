@@ -1,0 +1,419 @@
+[
+  {
+    "image": "sketch-intro.webp",
+    "sourceFile": "网站开头分镜.png",
+    "sourceSize": [
+      3840,
+      2160
+    ],
+    "displaySize": [
+      1600,
+      900
+    ],
+    "kind": "author drawing"
+  },
+  {
+    "image": "sketch-hero.webp",
+    "sourceFile": "头图及人物示例.png",
+    "sourceSize": [
+      3840,
+      2160
+    ],
+    "displaySize": [
+      1600,
+      900
+    ],
+    "kind": "author drawing"
+  },
+  {
+    "image": "sketch-about.webp",
+    "sourceFile": "个人介绍页面构图示例.png",
+    "sourceSize": [
+      3840,
+      2160
+    ],
+    "displaySize": [
+      1600,
+      900
+    ],
+    "kind": "author drawing"
+  },
+  {
+    "image": "sketch-gallery.webp",
+    "sourceFile": "视觉作品部分构图示例.png",
+    "sourceSize": [
+      3840,
+      2160
+    ],
+    "displaySize": [
+      1600,
+      900
+    ],
+    "kind": "author drawing"
+  },
+  {
+    "image": "sketch-mailbox.webp",
+    "sourceFile": "网站页末邮箱示意图.png",
+    "sourceSize": [
+      3840,
+      2160
+    ],
+    "displaySize": [
+      1600,
+      900
+    ],
+    "kind": "author drawing"
+  },
+  {
+    "image": "ai-hero-v1.webp",
+    "sourceFile": "hero-v1.png",
+    "sourceSize": [
+      1347,
+      1168
+    ],
+    "displaySize": [
+      1347,
+      1168
+    ],
+    "kind": "AI placeholder"
+  },
+  {
+    "image": "ai-hero-v3.webp",
+    "sourceFile": "hero-v3.png",
+    "sourceSize": [
+      1346,
+      1168
+    ],
+    "displaySize": [
+      1346,
+      1168
+    ],
+    "kind": "AI placeholder"
+  },
+  {
+    "image": "ai-about.webp",
+    "sourceFile": "about-v1.png",
+    "sourceSize": [
+      1184,
+      1328
+    ],
+    "displaySize": [
+      1184,
+      1328
+    ],
+    "kind": "AI placeholder"
+  },
+  {
+    "image": "ai-clouds-v1.webp",
+    "sourceFile": "cloud-sheet-v1.png",
+    "sourceSize": [
+      1536,
+      1024
+    ],
+    "displaySize": [
+      1536,
+      1024
+    ],
+    "kind": "AI placeholder"
+  },
+  {
+    "image": "ai-clouds-v2.webp",
+    "sourceFile": "cloud-sheet-flat-v2.png",
+    "sourceSize": [
+      1536,
+      1024
+    ],
+    "displaySize": [
+      1536,
+      1024
+    ],
+    "kind": "AI placeholder"
+  },
+  {
+    "image": "painted-falling.webp",
+    "sourceFile": "坠落.png",
+    "sourceSize": [
+      3119,
+      2130
+    ],
+    "displaySize": [
+      1600,
+      1093
+    ],
+    "kind": "author drawing"
+  },
+  {
+    "image": "painted-echo.webp",
+    "sourceFile": "坠落纯色.png",
+    "sourceSize": [
+      3119,
+      2130
+    ],
+    "displaySize": [
+      1600,
+      1093
+    ],
+    "kind": "author drawing"
+  },
+  {
+    "image": "painted-white.webp",
+    "sourceFile": "坠落纯白.png",
+    "sourceSize": [
+      3119,
+      2130
+    ],
+    "displaySize": [
+      1600,
+      1093
+    ],
+    "kind": "author drawing"
+  },
+  {
+    "image": "painted-about.webp",
+    "sourceFile": "组合.png",
+    "sourceSize": [
+      1810,
+      1739
+    ],
+    "displaySize": [
+      1561,
+      1500
+    ],
+    "kind": "author drawing"
+  },
+  {
+    "image": "painted-person.webp",
+    "sourceFile": "人物.png",
+    "sourceSize": [
+      1603,
+      1481
+    ],
+    "displaySize": [
+      1600,
+      1478
+    ],
+    "kind": "author drawing"
+  },
+  {
+    "image": "painted-window.webp",
+    "sourceFile": "网页.png",
+    "sourceSize": [
+      1422,
+      1739
+    ],
+    "displaySize": [
+      1227,
+      1500
+    ],
+    "kind": "author drawing"
+  },
+  {
+    "image": "painted-bubble.webp",
+    "sourceFile": "Hi气泡.png",
+    "sourceSize": [
+      557,
+      357
+    ],
+    "displaySize": [
+      557,
+      357
+    ],
+    "kind": "author drawing"
+  },
+  {
+    "image": "painted-icon.webp",
+    "sourceFile": "烟灰蛸.png",
+    "sourceSize": [
+      1000,
+      1000
+    ],
+    "displaySize": [
+      1000,
+      1000
+    ],
+    "kind": "author drawing"
+  },
+  {
+    "kind": "historical page screenshot",
+    "images": [
+      "v21-about.webp",
+      "v21-contact.webp",
+      "v21-gallery.webp",
+      "v21-games.webp",
+      "v21-hero.webp"
+    ],
+    "commit": "e904f901fa7f1adb282a3f0b080e902a51ff8b4e",
+    "note": "Rendered again from the archived Git source; not a saved screenshot from that date."
+  },
+  {
+    "kind": "recovered historical code",
+    "files": [
+      "history/intro-initial.js",
+      "history/water-initial.js"
+    ],
+    "recordDate": "2026-09-30",
+    "note": "Initial intro.js recovered from its saved Add File tool record; water helper exports only original geometry."
+  },
+  {
+    "kind": "recovered historical code",
+    "files": [
+      "history/water-five-streams.js"
+    ],
+    "recordDate": "2026-09-30",
+    "sourceFile": "repair-intro.py",
+    "note": "Original waterShape/passShape restored from retained repair script, without applying that script to the current site."
+  },
+  {
+    "kind": "recovered historical code",
+    "files": [
+      "history/water-v11.js"
+    ],
+    "recordDate": "2026-10-01",
+    "note": "Five-stream water unchanged; passShape recovered from the saved v11 material replacement write."
+  },
+  {
+    "kind": "recovered historical code",
+    "files": [
+      "history/intro-flow-v20.js",
+      "history/v20-intro.js",
+      "history/v20-intro.css"
+    ],
+    "recordDate": "2026-10-02",
+    "note": "Recovered v20 Add File writes plus the exact subsequent geometry patch; before v21 white figure/cloud changes."
+  },
+  {
+    "kind": "historical geometry comparison",
+    "images": [
+      "water-generations.webp",
+      "water-generations.gif",
+      "pass-generations.webp"
+    ],
+    "note": "Rendered from recovered functions and v20 code. Water: common times 0.85/1.25/1.65/2.15 s; pass: 2.65/2.90/3.15/3.35 s. Comparisons use common framing/current typography; not original full-site screenshots. GIF at half speed."
+  },
+  {
+    "kind": "early storyboard screenshot",
+    "image": "early-storyboard.webp",
+    "sourceFile": "storyboard-v3.html",
+    "note": "Retained early HTML rendered with currently retained fonts/styles."
+  },
+  {
+    "kind": "current page screenshot",
+    "images": [
+      "current-about.webp",
+      "current-contact.webp",
+      "current-gallery.webp",
+      "current-games.webp",
+      "current-hero.webp",
+      "intro-storyboard.webp"
+    ],
+    "note": "Actual browser captures of the current built release."
+  },
+  {
+    "image": "planning-first-hero.webp",
+    "kind": "2026-09-29 initial planning HTML/CSS restored from saved first file write; original 石女.png hero; real name replaced by public pseudonym",
+    "displaySize": [
+      1440,
+      1000
+    ],
+    "motion": "disabled for layout comparison"
+  },
+  {
+    "image": "redesign-first-hero.webp",
+    "kind": "2026-09-30 initial design/index.html and design.css restored from first file write",
+    "displaySize": [
+      1440,
+      910
+    ],
+    "motion": "disabled for layout comparison"
+  },
+  {
+    "image": "early-hero.webp",
+    "kind": "2026-09-30 initial design/index-v2.html and design.css restored from first file write; font fallback for earlier text",
+    "displaySize": [
+      1440,
+      910
+    ],
+    "motion": "disabled for layout comparison"
+  },
+  {
+    "image": "early-about.webp",
+    "kind": "2026-09-30 initial design/index-v2.html and design.css restored from first file write; font fallback for earlier text",
+    "displaySize": [
+      1440,
+      984
+    ],
+    "motion": "disabled for layout comparison"
+  },
+  {
+    "image": "early-contact.webp",
+    "kind": "2026-09-30 initial design/index-v2.html and design.css restored from first file write; font fallback for earlier text",
+    "displaySize": [
+      1440,
+      651
+    ],
+    "motion": "disabled for layout comparison"
+  },
+  {
+    "image": "handdrawn-hero.webp",
+    "kind": "Selected earlier layout and authored material revisions reconstructed; retained refinement/polish styles; font fallback; not a complete historical release",
+    "displaySize": [
+      1440,
+      910
+    ],
+    "motion": "disabled for layout comparison"
+  },
+  {
+    "image": "handdrawn-about.webp",
+    "kind": "Selected earlier layout and authored material revisions reconstructed; retained refinement/polish styles; font fallback; not a complete historical release",
+    "displaySize": [
+      1440,
+      1076
+    ],
+    "motion": "disabled for layout comparison"
+  },
+  {
+    "image": "handdrawn-contact.webp",
+    "kind": "Selected earlier layout and authored material revisions reconstructed; retained refinement/polish styles; font fallback; not a complete historical release",
+    "displaySize": [
+      1440,
+      781
+    ],
+    "motion": "disabled for layout comparison"
+  },
+  {
+    "image": "final-hero.webp",
+    "kind": "Current live-source section captured in browser",
+    "displaySize": [
+      1440,
+      922
+    ],
+    "motion": "disabled for layout comparison"
+  },
+  {
+    "image": "final-about.webp",
+    "kind": "Current live-source section captured in browser",
+    "displaySize": [
+      1440,
+      989
+    ],
+    "motion": "disabled for layout comparison"
+  },
+  {
+    "image": "final-contact.webp",
+    "kind": "Current live-source section captured in browser",
+    "displaySize": [
+      1440,
+      791
+    ],
+    "motion": "disabled for layout comparison"
+  },
+  {
+    "image": "wordmark-generations.webp",
+    "kind": "Retained wordmark-cream, wordmark-hero-v9, wordmark-hero-v13, wordmark-hero-v14 SVG files rendered at common size",
+    "displaySize": [
+      1392,
+      629
+    ],
+    "motion": "disabled for layout comparison"
+  }
+]
