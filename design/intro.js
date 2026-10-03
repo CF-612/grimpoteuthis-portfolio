@@ -47,20 +47,44 @@
     });
     const pass = svgNode('svg', {class: 'intro-pass', viewBox: `0 0 ${width} ${height}`, preserveAspectRatio: 'none'});
     const defs = svgNode('defs');
-    const gradient = svgNode('linearGradient', {id, x1: '0', y1: '0', x2: '1', y2: '.8'});
-    for (const [offset, color] of [['0', '#e9d3e4'], ['.48', '#eddde8'], ['1', '#d5bcdb']]) gradient.append(svgNode('stop', {offset, 'stop-color': color}));
+    const gradient = svgNode('linearGradient', {id, x1: '0%', y1: '0%', x2: '85%', y2: '100%'});
+    for (const [offset, color] of [['0', '#bea8ce'], ['.32', '#dcc6e0'], ['.64', '#f0dddf'], ['1', '#cbb3d5']]) gradient.append(svgNode('stop', {offset, 'stop-color': color}));
+    const glow = svgNode('radialGradient', {id: id + '-glow', cx: '64%', cy: '42%', r: '67%'});
+    for (const [offset, color, opacity] of [['0', '#fff9e7', '.92'], ['.4', '#fff5e9', '.44'], ['1', '#fff4e8', '0']]) glow.append(svgNode('stop', {offset, 'stop-color': color, 'stop-opacity': opacity}));
+    const ribbon = svgNode('linearGradient', {id: id + '-ribbon', x1: '0%', y1: '0%', x2: '0%', y2: '100%'});
+    for (const [offset, opacity] of [['0', '0'], ['.36', '.08'], ['.6', '.65'], ['.78', '.18'], ['1', '0']]) ribbon.append(svgNode('stop', {offset, 'stop-color': '#fffaf0', 'stop-opacity': opacity}));
+    const warmth = svgNode('linearGradient', {id: id + '-warmth', x1: '0%', y1: '100%', x2: '90%', y2: '0%'});
+    warmth.append(svgNode('stop', {offset: '0', 'stop-color': '#f4cfc5', 'stop-opacity': '.76'}), svgNode('stop', {offset: '.58', 'stop-color': '#fff0d3', 'stop-opacity': '.6'}), svgNode('stop', {offset: '1', 'stop-color': '#fff1e4', 'stop-opacity': '0'}));
+    const glint = svgNode('linearGradient', {id: id + '-glint', x1: '0%', y1: '0%', x2: '100%', y2: '0%'});
+    glint.append(svgNode('stop', {offset: '0', 'stop-color': '#fff8df', 'stop-opacity': '0'}), svgNode('stop', {offset: '.46', 'stop-color': '#fffdf4', 'stop-opacity': '.85'}), svgNode('stop', {offset: '1', 'stop-color': '#fff5de', 'stop-opacity': '0'}));
     const clip = svgNode('clipPath', {id: id + '-clip'});
     clip.append(svgNode('path', {d: scene.clothPath}));
-    defs.append(gradient, clip);
+    defs.append(gradient, glow, ribbon, warmth, glint, clip);
     const cloth = svgNode('g');
     cloth.append(svgNode('path', {d: scene.clothPath, fill: `url(#${id})`}));
+    cloth.append(svgNode('path', {d: scene.clothPath, fill: `url(#${id}-glow)`}));
+    const warmLight = svgNode('path', {d: scene.clothPath, fill: `url(#${id}-warmth)`});
+    cloth.append(warmLight);
     const folds = svgNode('g', {'clip-path': `url(#${id}-clip)`});
-    // Subtle sweeping contours support the author's white silhouette.
-    for (let i = 0; i < 4; i++) {
-      const y = height * (.22 + i * .31);
-      folds.append(svgNode('path', {d: `M${-width * .1} ${y} C${width * .26} ${y-height*.32} ${width*.57} ${y+height*.3} ${width*1.1} ${y-height*.08}`, fill: 'none', stroke: i % 2 ? '#fffefa' : '#c4adc9', 'stroke-width': height * .002, opacity: '.27'}));
+    // Broad light ribbons give the opaque veil depth without extra bitmap loads.
+    const lightBands = [];
+    for (let i = 0; i < 3; i++) {
+      const y = height * (.28 + i * .43), depth = height * .18;
+      const band = svgNode('g');
+      const curve = `M${-width*.14} ${y} C${width*.18} ${y-height*.26} ${width*.55} ${y+height*.24} ${width*1.14} ${y-height*.1}`;
+      band.append(svgNode('path', {d: curve + ` L${width*1.14} ${y-height*.1+depth} C${width*.55} ${y+height*.24+depth} ${width*.18} ${y-height*.26+depth} ${-width*.14} ${y+depth}Z`, fill: `url(#${id}-ribbon)`}));
+      band.append(svgNode('path', {d: curve, fill: 'none', stroke: `url(#${id}-glint)`, 'stroke-width': Math.max(1, height * .0015), opacity: '.48'}));
+      band.append(svgNode('path', {d: curve, fill: 'none', stroke: '#b498be', 'stroke-width': height * .015, opacity: '.07', transform: `translate(0 ${depth*.88})`}));
+      folds.append(band); lightBands.push(band);
     }
+    const wake = svgNode('g', {class: 'intro-silk-wake', fill: 'none', stroke: `url(#${id}-glint)`});
+    for (let i = 0; i < 3; i++) {
+      const y = height * i * .038;
+      wake.append(svgNode('path', {d: `M${-width*.4} ${y+height*.08} C${-width*.16} ${y-height*.12} ${width*.1} ${y+height*.13} ${width*.38} ${y-height*.04}`, 'stroke-width': Math.max(1, height * (i ? .002 : .007)), opacity: i ? '.56' : '.3'}));
+    }
+    folds.append(wake);
     cloth.append(folds);
+    cloth.append(svgNode('path', {d: scene.clothPath, fill: 'none', stroke: '#fff4df', 'stroke-width': Math.max(1.5, height * .003), opacity: '.52'}));
     pass.append(defs, cloth);
     layer.append(paper, quote, water, pass);
     const silhouette = document.createElement('img');
@@ -114,8 +138,14 @@
       cloth.setAttribute('transform', `translate(0 ${s.clothY})`);
       const p = Math.max(0, Math.min(1, (t - 2.08) / (flow.duration - 2.08)));
       const fall = .8 * p + .2 * p * p;
+      const figureY = figureStart + (height * 1.58 - figureStart) * fall;
+      warmLight.setAttribute('opacity', String(Math.max(0, Math.min(.82, (p - .18) * 1.25))));
+      lightBands.forEach((band, i) => band.setAttribute('transform', `translate(${width * .035 * Math.sin(p * 2.8 + i)} ${height * .022 * Math.sin(p * 3.5 + i * 1.3)})`));
+      const wakeProgress = Math.max(0, Math.min(1, (p - .2) / .75));
+      wake.setAttribute('opacity', String(Math.sin(wakeProgress * Math.PI) * .8));
+      wake.setAttribute('transform', `translate(${width * (.57 - p * .2)} ${figureY + figureWidth * .4 - s.clothY}) rotate(-12)`);
       silhouette.style.opacity = String(Math.max(0, Math.min(1, (t - 2.08) / .18)));
-      silhouette.style.transform = `translate(${width * (.10 - p * .20)}px, ${figureStart + (height * 1.58 - figureStart) * fall}px) rotate(${-16 + p * 17}deg)`;
+      silhouette.style.transform = `translate(${width * (.10 - p * .20)}px, ${figureY}px) rotate(${-16 + p * 17}deg)`;
       clouds.forEach((img, i) => {
         img.style.opacity = s.clothVisible ? String(Math.min(1, (t - 2.18) / .16)) : '0';
         img.style.transform = `translate(${width * Math.sin(p * 1.6 + i) * .025}px, ${s.clothY + height * ([.16, 1.0, .68, .95][i])}px) rotate(${[-8, 7, -6, 12][i]}deg)`;
