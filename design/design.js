@@ -48,7 +48,8 @@
   reduced.addEventListener('change',refreshFolders);
   function chooseGame(index) {
     const game = data.games[index];
-    const imageBox = make('div', 'game-image');
+    const imageBox = make(game.link ? 'a' : 'div', 'game-image');
+    if(game.link){imageBox.href=game.link;imageBox.setAttribute('aria-label','查看'+game.name+'详情');}
     if (game.cover) {
       const img = make('img'); img.alt = game.name + '指定封面'; img.width = 1200; img.height = 800;setImageSource(img,game.cover);
       imageBox.append(img);
@@ -57,13 +58,15 @@
     const genres=make('div','game-genres');
     (game.tags || []).forEach(tag=>genres.append(make('span','game-genre',tag)));
     content.append(genres);
-    content.append(make('h3', '', game.name), make('p', '', game.summary));
+    const title=make('h3');
+    if(game.link){const link=make('a','game-title-link',game.name);link.href=game.link;title.append(link);}
+    else title.textContent=game.name;
+    content.append(title, make('p', '', game.summary));
     const tags = make('dl', 'project-tags');
     [['我的角色', game.role], ['团队规模', game.team], ['引擎 / 平台', game.platform]].forEach(([label,value]) => {
       const row = make('div'); row.append(make('dt', '', label), make('dd', '', value || '待核对')); tags.append(row);
     });
     content.append(tags);
-    if (game.link) { const link = make('a','detail-link','查看作品 ↗'); link.href = game.link; content.append(link); }
     preview.replaceChildren(imageBox, content);
     buttons.forEach((button,i) => {button.classList.toggle('active',i===index);button.setAttribute('aria-pressed',String(i===index));});
     refreshFolders();
@@ -81,9 +84,10 @@
 
   const stage=document.querySelector('.gallery-stage');
   const strip=document.querySelector('.gallery-thumbs');
-  let scrollControl=null;
   let thumbPitch=0;
   let thumbFrame=0;
+  let inertiaFrame=0;
+  function stopThumbMotion(){cancelAnimationFrame(thumbFrame);cancelAnimationFrame(inertiaFrame);}
   const thumbLoop=()=>data.arts.length*thumbPitch;
   function setThumbOffset(value){
     const loop=thumbLoop();
@@ -128,20 +132,9 @@
     caption.style.top=((availableHeight-height)/2+height+7)+'px';
     caption.style.maxWidth=Math.min(availableWidth,width+24)+'px';
   }
-  function syncScrollControl(){
+  function syncThumbs(){
     layoutThumbs();
-    if(!scrollControl)return;
-    const range=Math.max(0,(data.arts.length-1)*thumbPitch),loop=thumbLoop();
-    strip.classList.toggle('has-overflow',range>1);
-    scrollControl.hidden=range<=1;
-    const svg=scrollControl.querySelector('svg'),track=svg.querySelector('.arc-scroll-track'),thumb=svg.querySelector('.arc-scroll-thumb');
-    const length=track.getTotalLength(),fraction=Math.min(1,strip.clientWidth/Math.max(1,strip.clientWidth+loop));
-    const phase=loop?((strip.scrollLeft%loop)+loop)%loop:0;
-    const progress=range?Math.min(1,phase/range):0;
-    thumb.style.strokeDasharray=`${length*fraction} ${length}`;
-    thumb.style.strokeDashoffset=String(-progress*length*(1-fraction));
-    svg.setAttribute('aria-valuenow',String(Math.round(progress*100)));
-    svg.setAttribute('aria-valuetext',`预览位置 ${Math.round(progress*100)}%`);
+    strip.classList.toggle('has-overflow',data.arts.length>1);
   }
   function layoutThumbs(){
     const orbit=strip.querySelector('.thumb-orbit');
@@ -173,13 +166,13 @@
     const orbit=strip.querySelector('.thumb-orbit');
     if(orbit){
       const position=thumbPitch?strip.scrollLeft/thumbPitch:(data.arts.length>1?data.arts.length:0);
-      thumbPitch=innerWidth<=700?80:innerWidth<=1050?92:112;
+      thumbPitch=innerWidth<=700?126:innerWidth<=1050?154:180;
       const required=strip.clientWidth+Math.max(0,thumbButtons.length-1)*thumbPitch;
       orbit.style.width=required+'px';orbit.style.minWidth=required+'px';
       strip.style.overflowX='auto';strip.style.overflowY='hidden';
       strip.scrollLeft=position*thumbPitch;
     }
-    syncScrollControl();
+    syncThumbs();
     const nextArt=(focused+1)%nodes.length;around=[nextArt,...orbitQueue.filter(i=>i!==focused&&i!==nextArt).slice(0,4)];
     const positions=innerWidth<=700?mobileSlots:slots;
     nodes.forEach((node,i)=>{
@@ -218,15 +211,15 @@
     layout();busy=false;
   }
   function centerThumb(i) {
-    cancelAnimationFrame(thumbFrame);
+    stopThumbMotion();
     const start=strip.scrollLeft,loop=thumbLoop();
     if(!loop)return;
     const delta=((i*thumbPitch-start+loop/2)%loop+loop)%loop-loop/2;
-    if(reduced.matches){setThumbOffset(start+delta);syncScrollControl();return;}
+    if(reduced.matches){setThumbOffset(start+delta);syncThumbs();return;}
     const began=performance.now();
     function slide(now){
       const p=Math.min(1,(now-began)/480),eased=1-Math.pow(1-p,3);
-      setThumbOffset(start+delta*eased);syncScrollControl();
+      setThumbOffset(start+delta*eased);syncThumbs();
       if(p<1)thumbFrame=requestAnimationFrame(slide);
     }
     thumbFrame=requestAnimationFrame(slide);
@@ -252,24 +245,59 @@
     figure.style.setProperty('--float-duration',(5.3+i%4*.8)+'s');figure.style.setProperty('--float-delay',(-i*.67)+'s');figure.style.setProperty('--float-y',(7+i%3*3)+'px');figure.style.setProperty('--float-x',(i%2?-5:5)+'px');figure.append(button,caption);nodes.push(figure);
     for(let cycle=0;cycle<(data.arts.length>1?3:1);cycle++){
     const thumb=make('button');thumb.type='button';thumb.setAttribute('aria-label','选择'+art.name);thumb.setAttribute('aria-pressed','false');thumb.dataset.artIndex=String(i);thumb.dataset.slot=String(cycle*data.arts.length+i);
-    const small=make('img');small.alt=art.name;small.width=360;small.height=260;setImageSource(small,art.thumb);
+    const small=make('img');small.alt=art.name;small.width=360;small.height=260;small.draggable=false;setImageSource(small,art.thumb);
     thumb.title=art.name;thumb.dataset.number=String(i+1).padStart(2,'0');thumb.style.setProperty('--thumb-x',String(data.arts.length>1?i/(data.arts.length-1):.5));thumb.append(small);thumb.addEventListener('click',()=>focus(i,true));thumbButtons.push(thumb);
     }
   });
   stage.replaceChildren(...nodes);const thumbOrbit=make('div','thumb-orbit');thumbOrbit.innerHTML='<svg class=thumb-arc viewBox="0 0 1200 240" preserveAspectRatio=none aria-hidden=true><path d="M25 20Q600 390 1175 20"/></svg>';thumbOrbit.append(...thumbButtons);strip.replaceChildren(thumbOrbit);
-  scrollControl=make('div','gallery-scroll-control');
-  const arcPath='M28 14Q400 150 772 14';
-  scrollControl.innerHTML=`<svg viewBox="0 0 800 100" role="slider" tabindex="0" aria-label="画廊预览滚动位置" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><path class="arc-scroll-hit" d="${arcPath}"/><path class="arc-scroll-track" d="${arcPath}"/><path class="arc-scroll-thumb" d="${arcPath}"/></svg>`;
-  strip.after(scrollControl);
-  const scrollSvg=scrollControl.querySelector('svg');let drag=null;
-  function arcFraction(event){const matrix=scrollSvg.getScreenCTM();if(!matrix)return 0;const point=new DOMPoint(event.clientX,event.clientY).matrixTransform(matrix.inverse());return Math.max(0,Math.min(1,(point.x-28)/744));}
-  function moveArc(event){cancelAnimationFrame(thumbFrame);const loop=thumbLoop(),fraction=strip.clientWidth/(strip.clientWidth+loop),range=(data.arts.length-1)*thumbPitch;if(range<=1)return;const progress=(arcFraction(event)-(drag?.offset||0)-fraction/2)/(1-fraction);setThumbOffset(loop+Math.max(0,Math.min(1,progress))*range);syncScrollControl();}
-  scrollSvg.addEventListener('pointerdown',event=>{if(event.button!==0)return;const loop=thumbLoop(),range=(data.arts.length-1)*thumbPitch,fraction=strip.clientWidth/(strip.clientWidth+loop),phase=((strip.scrollLeft%loop)+loop)%loop;const center=(range?Math.min(1,phase/range):0)*(1-fraction)+fraction/2;drag={id:event.pointerId,offset:event.target.classList.contains('arc-scroll-thumb')?arcFraction(event)-center:0};scrollSvg.setPointerCapture(event.pointerId);moveArc(event);event.preventDefault();});
-  scrollSvg.addEventListener('pointermove',event=>{if(drag?.id===event.pointerId)moveArc(event);});
-  for(const type of ['pointerup','pointercancel','lostpointercapture'])scrollSvg.addEventListener(type,()=>{drag=null;});
-  scrollSvg.addEventListener('keydown',event=>{cancelAnimationFrame(thumbFrame);const range=(data.arts.length-1)*thumbPitch,loop=thumbLoop();const moves={ArrowLeft:-thumbPitch,ArrowRight:thumbPitch,PageUp:-strip.clientWidth*.8,PageDown:strip.clientWidth*.8};if(event.key==='Home')setThumbOffset(loop);else if(event.key==='End')setThumbOffset(loop+range);else if(event.key in moves)setThumbOffset(strip.scrollLeft+moves[event.key]);else return;event.preventDefault();syncScrollControl();});
-  strip.addEventListener('scroll',()=>{setThumbOffset(strip.scrollLeft);syncScrollControl();},{passive:true});
-  strip.addEventListener('pointerdown',()=>cancelAnimationFrame(thumbFrame),{passive:true});strip.addEventListener('wheel',()=>cancelAnimationFrame(thumbFrame),{passive:true});
+  strip.tabIndex=0;strip.setAttribute('role','group');
+  strip.setAttribute('aria-label','拖动画作，或使用左右方向键选择绘画作品');
+  let drag=null,suppressClickUntil=0;
+  strip.addEventListener('pointerdown',event=>{
+    if(event.button!==0||!event.isPrimary)return;
+    stopThumbMotion();
+    drag={id:event.pointerId,startX:event.clientX,startY:event.clientY,x:event.clientX,time:performance.now(),velocity:0,active:false};
+  });
+  strip.addEventListener('pointermove',event=>{
+    if(drag?.id!==event.pointerId)return;
+    const dx=event.clientX-drag.startX,dy=event.clientY-drag.startY;
+    if(!drag.active){
+      if(Math.max(Math.abs(dx),Math.abs(dy))<6)return;
+      // Keep vertical touch gestures available for scrolling the page.
+      if(Math.abs(dy)>Math.abs(dx)){drag=null;return;}
+      drag.active=true;strip.setPointerCapture(event.pointerId);strip.classList.add('dragging');
+    }
+    event.preventDefault();
+    const now=performance.now(),step=drag.x-event.clientX,elapsed=Math.max(1,now-drag.time);
+    drag.velocity=drag.velocity*.35+Math.max(-2.5,Math.min(2.5,step/elapsed))*.65;
+    setThumbOffset(strip.scrollLeft+step);syncThumbs();drag.x=event.clientX;drag.time=now;
+  });
+  function finishDrag(event){
+    if(drag?.id!==event.pointerId)return;
+    const previous=drag;drag=null;strip.classList.remove('dragging');
+    if(strip.hasPointerCapture(event.pointerId))strip.releasePointerCapture(event.pointerId);
+    if(!previous.active)return;
+    suppressClickUntil=performance.now()+300;
+    if(event.type!=='pointerup'||reduced.matches)return;
+    let velocity=performance.now()-previous.time<100?previous.velocity:0,last=performance.now();
+    function coast(now){
+      const elapsed=Math.min(32,now-last);last=now;
+      velocity*=Math.exp(-elapsed/180);
+      setThumbOffset(strip.scrollLeft+velocity*elapsed);syncThumbs();
+      if(Math.abs(velocity)>.02)inertiaFrame=requestAnimationFrame(coast);
+    }
+    if(Math.abs(velocity)>.02)inertiaFrame=requestAnimationFrame(coast);
+  }
+  strip.addEventListener('pointerup',finishDrag);strip.addEventListener('pointercancel',finishDrag);
+  strip.addEventListener('lostpointercapture',event=>{if(event.target===strip&&drag?.id===event.pointerId&&!strip.hasPointerCapture(event.pointerId)){drag=null;strip.classList.remove('dragging');}});
+  strip.addEventListener('click',event=>{if(performance.now()<suppressClickUntil){event.preventDefault();event.stopImmediatePropagation();}},true);
+  strip.addEventListener('keydown',event=>{
+    const targets={ArrowLeft:(focused-1+data.arts.length)%data.arts.length,ArrowRight:(focused+1)%data.arts.length,Home:0,End:data.arts.length-1};
+    if(!(event.key in targets))return;
+    event.preventDefault();focus(targets[event.key],true);
+  });
+  strip.addEventListener('scroll',()=>{setThumbOffset(strip.scrollLeft);syncThumbs();},{passive:true});
+  strip.addEventListener('wheel',stopThumbMotion,{passive:true});
   new ResizeObserver(()=>{if(!busy)layout();}).observe(strip);
   document.querySelector('.gallery').classList.add('enhanced');layout();
   addEventListener('resize',()=>{if(!busy)layout();});
