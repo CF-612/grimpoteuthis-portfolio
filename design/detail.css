@@ -18,3 +18,14 @@ header{gap:24px}.brand{display:grid;gap:8px;min-width:0}.brand small{font:12px/1
 .gameplay-gallery{margin:0 0 65px}.gameplay-gallery .exhibit-heading{border-bottom:1px solid #d7c3cb;padding-bottom:20px}.gameplay-gallery .exhibit-heading a{border-bottom:1px solid #c1a1b3}.gameplay-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:30px 24px}.gameplay-shot{min-width:0;margin:0;background:#fffaf3;border:1px solid #dac7ce;border-radius:14px;overflow:hidden;box-shadow:0 8px 28px #8a65790b}.gameplay-shot:first-child{grid-column:1/-1}.gameplay-shot>a{display:block;background:#ede2df}.gameplay-shot img{display:block;width:100%;height:auto}.gameplay-shot figcaption{display:flex;gap:16px;padding:22px}.gameplay-shot figcaption>span{font:italic 24px/1.5 Georgia;color:#b599a6}.gameplay-shot h3{font:25px/1.4 Brush,serif;margin:0;color:#77576d}.gameplay-shot p{font:14px/1.9 'Microsoft YaHei',sans-serif;color:#927b88;margin:8px 0 0}
 .notes{margin-bottom:50px}.notes article{background:#fffaf280}.exhibits{border-top:1px solid #d8c5cd;padding-top:40px}
 @media(max-width:600px){header{gap:14px}.brand small{font-size:11px;max-width:220px}.game-genre{font-size:14px;padding:6px 13px}.file-heading{align-items:flex-start}.gameplay-grid{grid-template-columns:1fr;gap:24px}.gameplay-shot figcaption{padding:18px;gap:12px}.gameplay-shot h3{font-size:24px}.media{margin-bottom:45px}.video-link>span{padding:32px 16px 14px;font-size:12px}.brand+ a{max-width:100px;text-align:right}}
+
+/* Notebook comics retain their complete compositions and reading order. */
+.comic-group h3 { font: 24px/1.5 Brush,serif; color: #87687a; }
+.comic-group + .comic-group { margin-top: 38px; }
+.comic-grid { align-items: start; }
+.comic-grid figure a { padding: 18px; background: #fffaf2; }
+.comic-grid img { max-height: 440px; object-fit: contain; }
+.comic-grid figure:last-child:nth-child(3) { grid-column: 1 / -1; }
+@media (max-width: 700px) { .comic-grid { grid-template-columns: 1fr; gap: 20px; } .comic-grid figure:last-child:nth-child(3) { grid-column: auto; } .comic-grid figure a { padding: 12px; } }
+
+.asset-grid .pose-sheet { grid-column: 1 / -1; }

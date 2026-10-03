@@ -167,14 +167,6 @@ window.portfolioData = {
       "original": "assets/originals/art-10.webp"
     },
     {
-      "id": "art-11",
-      "name": "JUMP",
-      "file": "JUMP.png",
-      "thumb": "assets/thumbs/art-11.webp",
-      "stage": "assets/stage/art-11.webp",
-      "original": "assets/originals/art-11.webp"
-    },
-    {
       "id": "art-12",
       "name": "辣鸡游戏开发社团宣传海报带LOGO",
       "file": "辣鸡游戏开发社团宣传海报带LOGO.png",
