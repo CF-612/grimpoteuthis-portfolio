@@ -202,6 +202,10 @@ footer > a:last-child { border-bottom: 1px solid #d5b3aa66; padding-bottom: 5px;
 
 /* Folder lettering follows the exact same animation position as its outline. */
 .folder-label { transition: none; }
+/* The SVG contour owns pointer hits; transparent button corners pass through. */
+.archive-tabs > .folder-choice { pointer-events: none; }
+.folder-choice svg > path { pointer-events: visiblePainted; }
+.folder-choice .folder-tab-group { pointer-events: none; }
 
 /* v16: authored layers share their original canvas; bubbles sit between them. */
 .about .authored-window, .about .authored-portrait {
