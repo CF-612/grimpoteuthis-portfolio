@@ -11,4 +11,4 @@ if(html.split('<div class="archive">').length!==2||html.split('<div class="galle
 html=html.replace('<div class="archive">',gameList+'<div class="archive">');
 html=html.replace('<div class="gallery-stage">',artList+'<div class="gallery-stage">');
 fs.writeFileSync(path.join(root,'index.html'),html);
-console.log('Static baseline includes 6 project records and 12 links to original artwork.');
+console.log(`Static baseline includes ${data.games.length} project records and ${data.arts.length} links to original artwork.`);

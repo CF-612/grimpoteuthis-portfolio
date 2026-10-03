@@ -179,6 +179,14 @@ window.portfolioData = {
       "thumb": "assets/thumbs/art-12.webp",
       "stage": "assets/stage/art-12.webp",
       "original": "assets/originals/art-12.webp"
+    },
+    {
+      "id": "art-13",
+      "name": "赠图",
+      "file": "赠图.png",
+      "thumb": "assets/thumbs/art-13.webp",
+      "stage": "assets/stage/art-13.webp",
+      "original": "assets/originals/art-13.webp"
     }
   ]
 };

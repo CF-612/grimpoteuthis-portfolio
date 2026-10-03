@@ -3,6 +3,8 @@
 !/.gitignore
 !/.gitattributes
 !/README.md
+!/DEPLOYMENT.md
+!/docs/
 !/LICENSE
 !/ASSET_LICENSE.md
 !/RELEASE_REVIEW.md

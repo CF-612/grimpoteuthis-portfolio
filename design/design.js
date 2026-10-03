@@ -27,9 +27,6 @@
   const preview = document.querySelector('.game-preview');
   const tabs = document.querySelector('.archive-tabs');
   const buttons = [];
-  const selection = make('p','archive-selection');
-  selection.setAttribute('aria-live','polite');
-  tabs.before(selection);
   let folderFrame=0,folderUntil=0;
   function drawFolderFronts(time){
     folderFrame=0;
@@ -60,7 +57,6 @@
     const genres=make('div','game-genres');
     (game.tags || []).forEach(tag=>genres.append(make('span','game-genre',tag)));
     content.append(genres);
-    selection.replaceChildren(make('span','','正在查看'),make('strong','',game.name));
     content.append(make('h3', '', game.name), make('p', '', game.summary));
     const tags = make('dl', 'project-tags');
     [['我的角色', game.role], ['团队规模', game.team], ['引擎 / 平台', game.platform]].forEach(([label,value]) => {
@@ -77,7 +73,7 @@
     const button=make('button','folder-choice');button.setAttribute('aria-label',game.name);
     const colors=['#f2d8a5','#bad1d8','#d8d9bd','#d9c8e0','#edc7b8','#bdcfd8'];const offsets=[18,139,55,104,8,75];
     button.style.setProperty('--folder-color',colors[i]);button.style.setProperty('--home-tab',offsets[i]+'px');button.style.setProperty('--folder-index',i);button.style.zIndex=String(i+1);
-    button.innerHTML='<svg viewBox="0 0 400 350" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="folderShade'+i+'" x2="0" y2="1"><stop stop-color="currentColor"/><stop offset="1" stop-color="currentColor" stop-opacity=".86"/></linearGradient></defs><path d="M13 65Q13 53 26 53H373Q389 53 389 69V324Q389 339 374 339H26Q11 339 11 324Z" fill="currentColor" stroke="#b79c8e" stroke-width="1.2"/><path d="M28 61H375V323H28Z" fill="#fff8e9" stroke="#d3bca6" stroke-width="1"/><path d="M33 64H369M36 68H365" stroke="#ded2bc" stroke-width="1.2"/><path class="folder-front" d="M8 327V88Q8 74 18 74H18V24Q18 9 33 9H218Q226 9 231 17L252 47Q256 53 256 74H389Q393 74 393 88L384 327Q384 343 366 343H22Q7 343 8 327Z" fill="url(#folderShade'+i+')" stroke="#aa9285" stroke-width="1.2"/><path d="M24 84Q188 73 378 83" stroke="#fff7e6" opacity=".6" fill="none" stroke-width="2"/><path d="M29 320H123M29 313H153" stroke="#9b8875" opacity=".4"/><rect x="270" y="278" width="85" height="43" rx="4" fill="#fffaf0" opacity=".5"/><path d="M281 294H344M281 305H323" stroke="#a99584" opacity=".5"/><g class="folder-tab-group"><path d="M14 20H197" stroke="#fff8e8" stroke-width="2" opacity=".55"/><circle class="folder-dot" cx="224" cy="56" r="3" fill="#fff7e6"/><g class="folder-check"><circle cx="224" cy="43" r="10" fill="#476e84"/><path d="m219 43 3 3 7-7" fill="none" stroke="#fffaf0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></g></g></svg>'; button.type='button'; button.setAttribute('aria-pressed',String(i===0));
+    button.innerHTML='<svg viewBox="0 0 400 350" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="folderShade'+i+'" x2="0" y2="1"><stop stop-color="currentColor"/><stop offset="1" stop-color="currentColor" stop-opacity=".86"/></linearGradient></defs><path d="M13 65Q13 53 26 53H373Q389 53 389 69V324Q389 339 374 339H26Q11 339 11 324Z" fill="currentColor" stroke="#b79c8e" stroke-width="1.2"/><path d="M28 61H375V323H28Z" fill="#fff8e9" stroke="#d3bca6" stroke-width="1"/><path d="M33 64H369M36 68H365" stroke="#ded2bc" stroke-width="1.2"/><path class="folder-front" d="M8 327V88Q8 74 18 74H18V24Q18 9 33 9H218Q226 9 231 17L252 47Q256 53 256 74H389Q393 74 393 88L384 327Q384 343 366 343H22Q7 343 8 327Z" fill="url(#folderShade'+i+')" stroke="#aa9285" stroke-width="1.2"/><path d="M24 84Q188 73 378 83" stroke="#fff7e6" opacity=".6" fill="none" stroke-width="2"/><path d="M29 320H123M29 313H153" stroke="#9b8875" opacity=".4"/><rect x="270" y="278" width="85" height="43" rx="4" fill="#fffaf0" opacity=".5"/><path d="M281 294H344M281 305H323" stroke="#a99584" opacity=".5"/><g class="folder-tab-group"><path d="M14 20H197" stroke="#fff8e8" stroke-width="2" opacity=".55"/><circle class="folder-dot" cx="224" cy="56" r="3" fill="#fff7e6"/></g></svg>'; button.type='button'; button.setAttribute('aria-pressed',String(i===0));
     const label=make('span','folder-label',game.name);button.append(label);new ResizeObserver(entries=>{button.style.setProperty('--folder-scale',entries[0].contentRect.width/400);}).observe(button);
     button.addEventListener('click',()=>chooseGame(i));buttons.push(button);
   });
@@ -183,7 +179,7 @@
   }
   async function focus(i,fromThumb=false) {
     if(busy)return;
-    if(fromThumb)centerThumb(i);
+    centerThumb(i);
     if(i===focused){if(!fromThumb)openArt(i);return;}
     await rearrange(()=>{
       const previous=focused;const slot=around.indexOf(i);
