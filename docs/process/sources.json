@@ -301,8 +301,6 @@
     "images": [
       "current-about.webp",
       "current-contact.webp",
-      "current-gallery.webp",
-      "current-games.webp",
       "current-hero.webp",
       "intro-storyboard.webp"
     ],
@@ -415,5 +413,93 @@
       629
     ],
     "motion": "disabled for layout comparison"
+  },
+  {
+    "image": "icon-initial.webp",
+    "kind": "author drawing",
+    "sourceFile": "初版烟灰蛸图标.png",
+    "sourceSize": [
+      149,
+      98
+    ],
+    "displaySize": [
+      149,
+      98
+    ],
+    "note": "Supplied original exported with lossless WebP; transparency and aspect ratio preserved."
+  },
+  {
+    "image": "icon-current.webp",
+    "kind": "author drawing",
+    "sourceFile": "烟灰蛸.png",
+    "sourceSize": [
+      1000,
+      1000
+    ],
+    "displaySize": [
+      512,
+      512
+    ],
+    "note": "Supplied original exported with lossless WebP; transparency and aspect ratio preserved."
+  },
+  {
+    "image": "planning-first-games.webp",
+    "kind": "2026-09-29 first planning prototype",
+    "source": "First index.html/styles.css writes and asset copy record from the planning conversation. Original covers/poster/drawings, with two renamed drawing files resolved by retained byte sizes and artwork identity.",
+    "displaySize": [
+      1440,
+      1758
+    ],
+    "note": "Rendered from preserved source, not a screenshot saved on the original date. Motion disabled; fixed header hidden for a clean section capture; private name hidden; retained local fonts used as fallback."
+  },
+  {
+    "image": "planning-first-gallery.webp",
+    "kind": "2026-09-29 first planning prototype",
+    "source": "First index.html/styles.css writes: four artwork grid, before the orbit gallery.",
+    "displaySize": [
+      1440,
+      2145
+    ],
+    "note": "Rendered from preserved source, not a screenshot saved on the original date. Motion disabled; fixed header hidden for a clean section capture; private name hidden; retained local fonts used as fallback."
+  },
+  {
+    "image": "redesign-first-games.webp",
+    "kind": "2026-09-30 first redesign",
+    "source": "Original index.html/design.css plus first design.js and data-generation recipe (saved tool write records 359, 351, 372). Text tabs before folder SVG.",
+    "displaySize": [
+      1440,
+      931
+    ],
+    "note": "Rendered from preserved source, not a screenshot saved on the original date. Motion disabled; fixed header hidden for a clean section capture; private name hidden; retained local fonts used as fallback."
+  },
+  {
+    "image": "redesign-first-gallery.webp",
+    "kind": "2026-09-30 first redesign",
+    "source": "Original CSS and first design.js: centered large artwork with five evenly spaced satellite positions and a straight thumbnail row.",
+    "displaySize": [
+      1440,
+      988
+    ],
+    "note": "Rendered from preserved source, not a screenshot saved on the original date. Motion disabled; fixed header hidden for a clean section capture; private name hidden; retained local fonts used as fallback."
+  },
+  {
+    "image": "current-games.webp",
+    "kind": "Current source section screenshot",
+    "source": "Current built release after fixed-circle cyclic preview and intro readiness repair.",
+    "displaySize": [
+      1440,
+      1078
+    ],
+    "note": "Rendered from preserved source, not a screenshot saved on the original date. Motion disabled; fixed header hidden for a clean section capture; private name hidden; retained local fonts used as fallback."
+  },
+  {
+    "image": "current-gallery.webp",
+    "kind": "Current source section screenshot",
+    "source": "Current built release after fixed-circle cyclic preview and intro readiness repair.",
+    "displaySize": [
+      1440,
+      1751
+    ],
+    "note": "Rendered from preserved source, not a screenshot saved on the original date. Motion disabled; fixed header hidden for a clean section capture; private name hidden; retained local fonts used as fallback."
   }
 ]
