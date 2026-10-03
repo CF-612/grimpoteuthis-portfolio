@@ -58,9 +58,6 @@ header{gap:24px}.brand{display:grid;gap:8px;min-width:0}.brand small{font:12px/1
 .sign-grid figure a { height: auto; background: #fff6e6; }
 .sign-grid figure img { height: auto; padding: 8px; }
 .sign-grid figure:first-child { grid-column: auto; }
-.arsenal-art .ui-parts-grid { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 24px; }
-.arsenal-art .ui-parts-grid figure:first-child { grid-column: auto; }
-.arsenal-art .ui-parts-grid figure a { height: 220px; }
 .arsenal-art .art-portrait-grid { grid-template-columns: 1fr; }
 .arsenal-art .art-portrait-grid figure a { height: 450px; }
 .factory-story { margin: 55px 0; }
@@ -74,9 +71,8 @@ header{gap:24px}.brand{display:grid;gap:8px;min-width:0}.brand small{font:12px/1
   .arsenal-art .monster-grid { grid-template-columns: repeat(3,minmax(0,1fr)); }
 }
 @media(max-width:600px) {
-  .arsenal-art .monster-grid,.arsenal-art .ui-parts-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; }
+  .arsenal-art .monster-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; }
   .arsenal-art .monster-grid figure a { height: 170px; }
-  .arsenal-art .ui-parts-grid figure a { height: 170px; }
   .arsenal-art .sign-grid,.factory-story .sign-grid { grid-template-columns: 1fr; gap: 20px; }
   .factory-chapter h3 { font-size: 21px; }
 }
