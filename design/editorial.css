@@ -207,8 +207,9 @@ footer > a:last-child { border-bottom: 1px solid #d5b3aa66; padding-bottom: 5px;
 .folder-choice svg > path { pointer-events: visiblePainted; }
 .folder-choice .folder-tab-group { pointer-events: none; }
 .octopus-watermark { aspect-ratio: 930 / 800; mask: url('assets/authored/octopus-outline.png') center / contain no-repeat; pointer-events: none; }
-.folder-mascot { position: absolute; left: -4%; top: 145px; width: 70%; background: #688ca2; opacity: .22; transform: rotate(55deg); }
-.profile-mascot { position: absolute; right: 16px; bottom: 42px; width: 48%; max-width: 260px; background: #a88bad; opacity: .12; transform: rotate(-8deg); z-index: -1; }
+.folder-mascot { opacity: .22; pointer-events: none; }
+.profile-sheet .facts > div:nth-child(2) { position: relative; }
+.profile-mascot { position: absolute; right: 4px; bottom: 8px; width: 60%; max-width: 100px; background: #a88bad; opacity: .12; transform: rotate(-8deg); z-index: -1; }
 
 /* v16: authored layers share their original canvas; bubbles sit between them. */
 .about .authored-window, .about .authored-portrait {

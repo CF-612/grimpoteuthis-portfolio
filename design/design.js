@@ -35,8 +35,9 @@
       const x=new DOMMatrix(getComputedStyle(group).transform).e;
       button.querySelector('.folder-label').style.transform=`translateX(${x*button.clientWidth/400}px)`;
       // One continuous contour: the moving tab and the pocket share their outline.
-      button.querySelector('.folder-front').setAttribute('d',
-        `M8 327V88Q8 74 ${Math.min(x,24)} 74H${x}V24Q${x} 9 ${x+15} 9H${x+200}Q${x+208} 9 ${x+213} 17L${x+234} 47Q${x+238} 53 ${x+238} 74H389Q393 74 393 88L384 327Q384 343 366 343H22Q7 343 8 327Z`);
+      const contour=`M8 327V88Q8 74 ${Math.min(x,24)} 74H${x}V24Q${x} 9 ${x+15} 9H${x+200}Q${x+208} 9 ${x+213} 17L${x+234} 47Q${x+238} 53 ${x+238} 74H389Q393 74 393 88L384 327Q384 343 366 343H22Q7 343 8 327Z`;
+      button.querySelector('.folder-front').setAttribute('d',contour);
+      button.querySelector('.folder-mascot-clip path')?.setAttribute('d',contour);
     });
     if(time<folderUntil)folderFrame=requestAnimationFrame(drawFolderFronts);
   }
@@ -83,8 +84,12 @@
     button.style.setProperty('--folder-color',colors[i]);button.style.setProperty('--home-tab',offsets[i]+'px');button.style.setProperty('--folder-index',i);button.style.zIndex=String(i+1);
     button.innerHTML='<svg viewBox="0 0 400 350" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="folderShade'+i+'" x2="0" y2="1"><stop stop-color="currentColor"/><stop offset="1" stop-color="currentColor" stop-opacity=".86"/></linearGradient></defs><path d="M13 65Q13 53 26 53H373Q389 53 389 69V324Q389 339 374 339H26Q11 339 11 324Z" fill="currentColor" stroke="#b79c8e" stroke-width="1.2"/><path d="M28 61H375V323H28Z" fill="#fff8e9" stroke="#d3bca6" stroke-width="1"/><path d="M33 64H369M36 68H365" stroke="#ded2bc" stroke-width="1.2"/><path class="folder-front" d="M8 327V88Q8 74 18 74H18V24Q18 9 33 9H218Q226 9 231 17L252 47Q256 53 256 74H389Q393 74 393 88L384 327Q384 343 366 343H22Q7 343 8 327Z" fill="url(#folderShade'+i+')" stroke="#aa9285" stroke-width="1.2"/><path d="M24 84Q188 73 378 83" stroke="#fff7e6" opacity=".6" fill="none" stroke-width="2"/><path d="M29 320H123M29 313H153" stroke="#9b8875" opacity=".4"/><rect x="270" y="278" width="85" height="43" rx="4" fill="#fffaf0" opacity=".5"/><path d="M281 294H344M281 305H323" stroke="#a99584" opacity=".5"/><g class="folder-tab-group"><path d="M14 20H197" stroke="#fff8e8" stroke-width="2" opacity=".55"/><circle class="folder-dot" cx="224" cy="56" r="3" fill="#fff7e6"/></g></svg>'; button.type='button'; button.setAttribute('aria-pressed',String(i===0));
     if(i===data.games.length-1){
-      const mascot=make('span','octopus-watermark folder-mascot');
-      mascot.setAttribute('aria-hidden','true');button.append(mascot);
+      const svg=button.querySelector('svg');
+      svg.insertAdjacentHTML('beforeend','<defs><mask id="folder-mascot-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="930" height="799" style="mask-type:alpha"><image href="assets/authored/octopus-outline.png" width="930" height="799"/></mask><clipPath id="folder-mascot-clip" class="folder-mascot-clip"><path/></clipPath></defs>');
+      const mascot=document.createElementNS('http://www.w3.org/2000/svg','g');
+      mascot.setAttribute('class','folder-mascot');mascot.setAttribute('clip-path','url(#folder-mascot-clip)');
+      mascot.innerHTML='<g transform="translate(-16 145) rotate(55 140 120) scale(.301)"><rect width="930" height="799" fill="#688ca2" mask="url(#folder-mascot-mask)"/></g>';
+      button.querySelector('.folder-front').after(mascot);
     }
     const label=make('span','folder-label',game.name);button.append(label);new ResizeObserver(entries=>{button.style.setProperty('--folder-scale',entries[0].contentRect.width/400);}).observe(button);
     button.addEventListener('click',()=>chooseGame(i));buttons.push(button);
