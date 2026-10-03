@@ -166,7 +166,7 @@
     const orbit=strip.querySelector('.thumb-orbit');
     if(orbit){
       const position=thumbPitch?strip.scrollLeft/thumbPitch:(data.arts.length>1?data.arts.length:0);
-      thumbPitch=innerWidth<=700?126:innerWidth<=1050?154:180;
+      thumbPitch=innerWidth<=700?103:innerWidth<=1050?125:145;
       const required=strip.clientWidth+Math.max(0,thumbButtons.length-1)*thumbPitch;
       orbit.style.width=required+'px';orbit.style.minWidth=required+'px';
       strip.style.overflowX='auto';strip.style.overflowY='hidden';

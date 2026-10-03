@@ -75,7 +75,7 @@ window.portfolioData = {
       "role": "人物美术",
       "team": "10+人团队",
       "platform": "Unity",
-      "summary": "在失去光明的世界里，遇见离灯。Bunana 小队的 Unity 冒险游戏，我负责人物美术。",
+      "summary": "在失去光明的世界里，遇见离灯。Bunana 小队的 Unity 冒险游戏。",
       "cover": "assets/games/light-title.webp",
       "link": "games/light.html",
       "tags": [
