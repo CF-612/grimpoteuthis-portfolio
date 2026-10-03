@@ -88,8 +88,19 @@
       svg.insertAdjacentHTML('beforeend','<defs><mask id="folder-mascot-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="930" height="799" style="mask-type:alpha"><image href="assets/authored/octopus-outline.png" width="930" height="799"/></mask><clipPath id="folder-mascot-clip" class="folder-mascot-clip"><path/></clipPath></defs>');
       const mascot=document.createElementNS('http://www.w3.org/2000/svg','g');
       mascot.setAttribute('class','folder-mascot');mascot.setAttribute('clip-path','url(#folder-mascot-clip)');
-      mascot.innerHTML='<g transform="translate(-16 145) rotate(55 140 120) scale(.301)"><rect width="930" height="799" fill="#688ca2" mask="url(#folder-mascot-mask)"/></g>';
+      mascot.innerHTML='<g class="folder-mascot-content" transform="translate(-16 145) rotate(55 140 120) scale(.301)"><rect width="930" height="799" fill="#688ca2" mask="url(#folder-mascot-mask)"/></g>';
       button.querySelector('.folder-front').after(mascot);
+      // The folder stretches to fit its column; keep its decoration uniformly scaled.
+      const resizeMascot = () => {
+        const style = getComputedStyle(svg);
+        const width = parseFloat(style.width), height = parseFloat(style.height);
+        if (!width || !height) return;
+        const scaleX = width / 400, scaleY = height / 350;
+        const uniformScale = Math.min(scaleX, scaleY);
+        mascot.firstElementChild.setAttribute('transform', `translate(-16 145) scale(${uniformScale / scaleX} ${uniformScale / scaleY}) rotate(55 140 120) scale(.301)`);
+      };
+      new ResizeObserver(resizeMascot).observe(button);
+      window.addEventListener('resize', resizeMascot);
     }
     const label=make('span','folder-label',game.name);button.append(label);new ResizeObserver(entries=>{button.style.setProperty('--folder-scale',entries[0].contentRect.width/400);}).observe(button);
     button.addEventListener('click',()=>chooseGame(i));buttons.push(button);
