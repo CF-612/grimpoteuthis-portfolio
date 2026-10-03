@@ -47,7 +47,7 @@
   }
   addEventListener('resize',refreshFolders);
   reduced.addEventListener('change',refreshFolders);
-  function chooseGame(index) {
+  function chooseGame(index, animate = true) {
     const game = data.games[index];
     const imageBox = make(game.link ? 'a' : 'div', 'game-image');
     if(game.link){imageBox.href=game.link;imageBox.setAttribute('aria-label','查看'+game.name+'详情');}
@@ -76,7 +76,7 @@
     preview.replaceChildren(imageBox, content);
     buttons.forEach((button,i) => {button.classList.toggle('active',i===index);button.setAttribute('aria-pressed',String(i===index));});
     refreshFolders();
-    if (!reduced.matches) preview.animate([{opacity:.6,transform:'translateY(8px)'},{opacity:1,transform:'translateY(0)'}],{duration:280,easing:'ease-out'});
+    if (animate && !reduced.matches) preview.animate([{opacity:.6,transform:'translateY(8px)'},{opacity:1,transform:'translateY(0)'}],{duration:280,easing:'ease-out'});
   }
   data.games.forEach((game,i) => {
     const button=make('button','folder-choice');button.setAttribute('aria-label',game.name);
@@ -94,7 +94,29 @@
     const label=make('span','folder-label',game.name);button.append(label);new ResizeObserver(entries=>{button.style.setProperty('--folder-scale',entries[0].contentRect.width/400);}).observe(button);
     button.addEventListener('click',()=>chooseGame(i));buttons.push(button);
   });
-  tabs.replaceChildren(...buttons);chooseGame(0);document.querySelector('.games').classList.add('enhanced');
+  const gameReturn = window.PortfolioBoot?.gameReturn;
+  const returnIndex = Number.isInteger(gameReturn?.index) && data.games[gameReturn.index] ? gameReturn.index : 0;
+  tabs.replaceChildren(...buttons);chooseGame(returnIndex, !gameReturn);document.querySelector('.games').classList.add('enhanced');
+  document.querySelector('#games').addEventListener('click', event => {
+    const link = event.target.closest('a');
+    if (!link || event.button || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+    const index = data.games.findIndex(game => new URL(game.link, location.href).href === link.href);
+    if (index < 0) return;
+    const state = {index, y: scrollY};
+    history.replaceState({...history.state, portfolioGameReturn: state}, '');
+    try { sessionStorage.setItem('portfolio-game-return', JSON.stringify(state)); } catch {}
+  });
+  if (gameReturn) {
+    const restore = () => scrollTo({top: Number.isFinite(gameReturn.y) ? gameReturn.y : document.querySelector('#games').offsetTop - document.querySelector('body > header').offsetHeight - 24, behavior: 'instant'});
+    restore();
+    requestAnimationFrame(() => {
+      restore();
+      document.documentElement.removeAttribute('data-game-return');
+      history.scrollRestoration = 'auto';
+      history.replaceState({...history.state, portfolioGameReturn: null}, '');
+      try { sessionStorage.removeItem('portfolio-game-return'); } catch {}
+    });
+  }
 
   const stage=document.querySelector('.gallery-stage');
   const strip=document.querySelector('.gallery-thumbs');

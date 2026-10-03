@@ -224,7 +224,7 @@
   }));
   const forced = new URLSearchParams(location.search).has('intro');
   // Homepage loads wait for critical images; chapter links and reduced motion stay direct.
-  if (!reduced.matches && !document.hidden && (forced || (document.body.dataset.complete && (!location.hash || location.hash === '#hero')))) {
+  if (!window.PortfolioBoot?.gameReturn && !reduced.matches && !document.hidden && (forced || (document.body.dataset.complete && (!location.hash || location.hash === '#hero')))) {
     scrollTo({top: 0, behavior: 'instant'});
     window.playPortfolioIntro();
   } else window.PortfolioBoot?.release();
