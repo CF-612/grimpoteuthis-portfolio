@@ -384,6 +384,9 @@ footer > a:last-child { border-bottom: 1px solid #d5b3aa66; padding-bottom: 5px;
   -webkit-mask-image: linear-gradient(to right,transparent,#000 var(--edge-fade),#000 calc(100% - var(--edge-fade)),transparent);
   mask-image: linear-gradient(to right,transparent,#000 var(--edge-fade),#000 calc(100% - var(--edge-fade)),transparent);
 }
+.gallery-thumbs { overscroll-behavior-x: contain; padding: 0; }
+.gallery-thumbs button { transform: translateX(-50%) rotate(var(--thumb-angle)); transition: box-shadow .3s, border-color .25s, background .25s; }
+.gallery-thumbs button:hover, .gallery-thumbs button:focus-visible { transform: translateX(-50%) translateY(-10px) rotate(var(--thumb-angle)) scale(1.08); }
 @media (max-width: 700px) {
   .identity-heading { column-gap: 10px; }
   .identity-heading .name-note { gap: 4px; }

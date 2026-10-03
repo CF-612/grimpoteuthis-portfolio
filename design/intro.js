@@ -1,7 +1,7 @@
 (() => {
   'use strict';
   const flow = window.PortfolioIntroFlow;
-  if (!flow) return; // Failed enhancements must never hide the page.
+  if (!flow) { window.PortfolioBoot?.release(); return; }
   const ns = 'http://www.w3.org/2000/svg';
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   let serial = 0;
@@ -80,6 +80,21 @@
       layer.append(img); return img;
     });
     host.append(layer);
+    // Decode the actual transition artwork and first-screen images before revealing.
+    const images = [...layer.querySelectorAll('img'), ...(!contained ? document.querySelectorAll('#hero img, header .brand-symbol') : [])];
+    const loading = {total: images.length + 1, completed: 0, failed: 0};
+    const tasks = images.map(async img => {
+      img.loading = 'eager';
+      try { await img.decode(); }
+      catch { loading.failed++; }
+      finally { loading.completed++; }
+    });
+    tasks.push((async () => {
+      try { await document.fonts.load('23px Intro', '世界是阿兹卡班，故事是假释'); await document.fonts.ready; }
+      catch { loading.failed++; }
+      finally { loading.completed++; }
+    })());
+    const ready = Promise.all(tasks);
     function render(t) {
       const s = scene.state(t);
       layer.dataset.phase = s.phase;
@@ -107,40 +122,68 @@
       });
     }
     render(0);
-    return {render, remove: () => layer.remove(), layer};
+    return {render, remove: () => layer.remove(), layer, loading, ready};
   }
 
   window.PortfolioIntro = {mount, duration: flow.duration};
   window.playPortfolioIntro = ({showResult = false} = {}) => {
     if (document.querySelector('.intro-layer:not(.intro-contained)') || reduced.matches) return;
-    const player = mount(document.body, {showResult});
+    let player = mount(document.body, {showResult});
+    document.documentElement.setAttribute('data-intro-playing', '');
+    window.PortfolioBoot?.release();
     const started = performance.now();
-    let frame = 0, finished = false;
-    const interrupts = ['pointerdown', 'wheel', 'keydown', 'touchstart'];
+    let frame = 0, finished = false, assetsReady = false, revealStarted = null;
+    let timeline = 0, lastFrame = started;
+    function watch(current) {
+      assetsReady = false;
+      current.ready.then(() => { if (current === player) assetsReady = true; });
+    }
+    watch(player);
     function cleanup() {
       if (finished) return;
       finished = true;
       cancelAnimationFrame(frame);
-      clearTimeout(failsafe);
       player.remove();
-      for (const event of interrupts) window.removeEventListener(event, cleanup);
-      document.removeEventListener('visibilitychange', onVisibility);
+      document.documentElement.removeAttribute('data-intro-playing');
       reduced.removeEventListener('change', onReduced);
-      window.removeEventListener('resize', cleanup);
+      window.removeEventListener('resize', onResize);
     }
-    function onVisibility() { if (document.hidden) cleanup(); }
     function onReduced() { if (reduced.matches) cleanup(); }
-    const failsafe = setTimeout(cleanup, (flow.duration + 1.3) * 1000);
+    function onResize() {
+      player.remove();
+      player = mount(document.body, {showResult});
+      timeline = Math.min(timeline, 2.16);
+      player.render(timeline);
+      watch(player);
+      // A newly selected responsive image must also decode before the reveal.
+      revealStarted = null;
+    }
     function draw(now) {
-      const t = (now - started) / 1000;
-      if (t >= flow.duration) { cleanup(); return; }
-      player.render(t);
+      const elapsed = (now - started) / 1000;
+      if (revealStarted === null) {
+        const progress = player.loading.completed / player.loading.total;
+        const goal = Math.min(elapsed, .48 + progress * 1.68);
+        timeline = Math.min(goal, timeline + Math.min(.1, (now - lastFrame) / 1000));
+        player.layer.dataset.loadingProgress = progress.toFixed(3);
+        player.layer.dataset.waiting = String(!assetsReady);
+        if (assetsReady && timeline >= 2.15) {
+          // A failed transition image gets a simple fade, never an empty purple pass.
+          if (player.loading.failed) {
+            player.layer.animate([{opacity:1},{opacity:0}], {duration:350}).finished.then(cleanup);
+            return;
+          }
+          revealStarted = now;
+        }
+      } else {
+        timeline = 2.18 + (now - revealStarted) / 1000;
+      }
+      if (timeline >= flow.duration) { cleanup(); return; }
+      player.render(timeline);
+      lastFrame = now;
       frame = requestAnimationFrame(draw);
     }
-    for (const event of interrupts) window.addEventListener(event, cleanup, {once: true, passive: true});
-    document.addEventListener('visibilitychange', onVisibility);
     reduced.addEventListener('change', onReduced);
-    window.addEventListener('resize', cleanup, {once: true});
+    window.addEventListener('resize', onResize);
     frame = requestAnimationFrame(draw);
   };
 
@@ -150,9 +193,9 @@
     window.playPortfolioIntro({showResult: button.dataset.result === 'true'});
   }));
   const forced = new URLSearchParams(location.search).has('intro');
-  // Keep v19: each homepage load plays; chapter links and reduced motion stay direct.
+  // Homepage loads wait for critical images; chapter links and reduced motion stay direct.
   if (!reduced.matches && !document.hidden && (forced || (document.body.dataset.complete && (!location.hash || location.hash === '#hero')))) {
     scrollTo({top: 0, behavior: 'instant'});
     window.playPortfolioIntro();
-  }
+  } else window.PortfolioBoot?.release();
 })();

@@ -1,5 +1,6 @@
 @font-face{font-family:Intro;src:url('assets/fonts/intro-serif-v21.otf');font-display:swap}
-.intro-layer{position:fixed;inset:0;z-index:1000;overflow:hidden;pointer-events:none;isolation:isolate;contain:layout paint}
+.intro-layer{position:fixed;inset:0;z-index:1000;overflow:hidden;pointer-events:auto;isolation:isolate;contain:layout paint}
+html[data-intro-playing]{overflow:hidden}
 .intro-paper{position:absolute;inset:0;background:#fffdf9;z-index:1}
 .intro-quote{position:absolute;inset:0;z-index:2;display:grid;place-items:center;font:23px/1.85 Intro,serif;text-align:center;color:#62404d;letter-spacing:.14em}
 .intro-quote .quote-line{display:block}.intro-quote .quote-line+.quote-line{margin-top:.28em}
@@ -10,7 +11,7 @@
 .intro-white-figure{position:absolute;top:0;left:4%;width:100%;height:auto;max-width:none;z-index:5;opacity:0;filter:drop-shadow(0 12px 18px #ad7e9c30);transform-origin:55% 50%;will-change:transform}
 .intro-flight-cloud{filter:drop-shadow(0 14px 16px #977ba52b)}
 .flight-1{right:-22%;width:69%;z-index:6}.flight-2{left:-24%;width:68%;z-index:6}.flight-3{right:-15%;width:50%;z-index:4}.flight-4{right:5%;width:57%;z-index:6}
-.intro-contained{position:absolute;z-index:1}
+.intro-contained{position:absolute;z-index:1;pointer-events:none}
 .intro-contained .intro-quote{font-size:clamp(12px,1.8vw,23px)}
 .intro-result{position:absolute;inset:0;z-index:0;overflow:hidden;background:linear-gradient(130deg,#fff1d1,#edc7dc)}
 .intro-result>img{position:absolute;right:-10%;bottom:-23%;width:73%;transform:rotate(-5deg)}

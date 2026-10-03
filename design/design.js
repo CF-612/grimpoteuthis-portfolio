@@ -82,6 +82,16 @@
   const stage=document.querySelector('.gallery-stage');
   const strip=document.querySelector('.gallery-thumbs');
   let scrollControl=null;
+  let thumbPitch=0;
+  let thumbFrame=0;
+  const thumbLoop=()=>data.arts.length*thumbPitch;
+  function setThumbOffset(value){
+    const loop=thumbLoop();
+    if(data.arts.length<=1){strip.scrollLeft=0;return;}
+    while(value<loop*.5)value+=loop;
+    while(value>loop*1.5)value-=loop;
+    strip.scrollLeft=value;
+  }
   const dialog=document.querySelector('.art-dialog');
   const nodes=[];const thumbButtons=[];
   let focused=0;let around=[1,2,3,4,5];let orbitQueue=data.arts.map((_,i)=>i).slice(1);let busy=false;
@@ -119,21 +129,56 @@
     caption.style.maxWidth=Math.min(availableWidth,width+24)+'px';
   }
   function syncScrollControl(){
+    layoutThumbs();
     if(!scrollControl)return;
-    const range=Math.max(0,strip.scrollWidth-strip.clientWidth);
+    const range=Math.max(0,(data.arts.length-1)*thumbPitch),loop=thumbLoop();
     strip.classList.toggle('has-overflow',range>1);
     scrollControl.hidden=range<=1;
     const svg=scrollControl.querySelector('svg'),track=svg.querySelector('.arc-scroll-track'),thumb=svg.querySelector('.arc-scroll-thumb');
-    const length=track.getTotalLength(),fraction=Math.min(1,strip.clientWidth/Math.max(1,strip.scrollWidth));
-    const progress=range?strip.scrollLeft/range:0;
+    const length=track.getTotalLength(),fraction=Math.min(1,strip.clientWidth/Math.max(1,strip.clientWidth+loop));
+    const phase=loop?((strip.scrollLeft%loop)+loop)%loop:0;
+    const progress=range?Math.min(1,phase/range):0;
     thumb.style.strokeDasharray=`${length*fraction} ${length}`;
     thumb.style.strokeDashoffset=String(-progress*length*(1-fraction));
     svg.setAttribute('aria-valuenow',String(Math.round(progress*100)));
     svg.setAttribute('aria-valuetext',`预览位置 ${Math.round(progress*100)}%`);
   }
+  function layoutThumbs(){
+    const orbit=strip.querySelector('.thumb-orbit');
+    if(!orbit||!thumbButtons.length)return;
+    const width=strip.clientWidth,compact=innerWidth<=700;
+    const sag=Math.min(compact?110:155,width*(compact ? .22 : .14));
+    const radius=width*width/(8*sag)+sag/2;
+    const centerY=12+sag+thumbButtons[0].offsetHeight/2;
+    const offset=strip.scrollLeft;
+    // Scroll position is distance along one stationary circle, not a translated curve.
+    thumbButtons.forEach(button=>{
+      const angle=(Number(button.dataset.slot)*thumbPitch-offset)/radius;
+      const visible=Math.abs(angle)<Math.PI/2;
+      button.style.visibility=visible?'visible':'hidden';
+      button.tabIndex=visible?0:-1;
+      button.style.left=(visible?offset+width/2+radius*Math.sin(angle):0)+'px';
+      button.style.top=(centerY+radius*(Math.cos(angle)-1)-button.offsetHeight/2)+'px';
+      button.style.setProperty('--thumb-angle',(-angle*180/Math.PI)+'deg');
+    });
+    const arc=orbit.querySelector('.thumb-arc');
+    const edgeY=centerY+Math.sqrt(radius*radius-width*width/4)-radius;
+    arc.setAttribute('viewBox',`0 0 ${width} ${strip.clientHeight}`);
+    arc.style.left=offset+'px';arc.style.width=width+'px';arc.style.height=strip.clientHeight+'px';
+    arc.querySelector('path').setAttribute('d',`M0 ${edgeY}A${radius} ${radius} 0 0 0 ${width} ${edgeY}`);
+    strip.dataset.arcRadius=String(radius);
+    strip.dataset.arcCenterY=String(centerY-radius);
+  }
   function layout() {
     const orbit=strip.querySelector('.thumb-orbit');
-    if(orbit){const pitch=innerWidth<=700?70:innerWidth<=1050?75:100;const required=data.arts.length*pitch+40;orbit.style.minWidth=required+'px';strip.style.overflowX=required>strip.clientWidth?'auto':'visible';strip.style.overflowY=required>strip.clientWidth?'hidden':'visible';}
+    if(orbit){
+      const position=thumbPitch?strip.scrollLeft/thumbPitch:(data.arts.length>1?data.arts.length:0);
+      thumbPitch=innerWidth<=700?80:innerWidth<=1050?92:112;
+      const required=strip.clientWidth+Math.max(0,thumbButtons.length-1)*thumbPitch;
+      orbit.style.width=required+'px';orbit.style.minWidth=required+'px';
+      strip.style.overflowX='auto';strip.style.overflowY='hidden';
+      strip.scrollLeft=position*thumbPitch;
+    }
     syncScrollControl();
     const nextArt=(focused+1)%nodes.length;around=[nextArt,...orbitQueue.filter(i=>i!==focused&&i!==nextArt).slice(0,4)];
     const positions=innerWidth<=700?mobileSlots:slots;
@@ -147,9 +192,9 @@
       node.querySelector('button').setAttribute('aria-label',i===focused?'放大'+data.arts[i].name:'聚焦'+data.arts[i].name);
       if(visible&&!node.querySelector('img').getAttribute('src'))setImageSource(node.querySelector('img'),i===focused?data.arts[i].stage:data.arts[i].thumb);
       if(i===focused||i===nextArt)setImageSource(node.querySelector('img'),data.arts[i].stage);
-      thumbButtons[i].classList.toggle('active',i===focused);thumbButtons[i].setAttribute('aria-pressed',String(i===focused));
       if(visible)placeCaption(node);
     });
+    thumbButtons.forEach(button=>{const active=Number(button.dataset.artIndex)===focused;button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active));});
   }
   async function rearrange(change) {
     if(busy)return;busy=true;
@@ -173,9 +218,18 @@
     layout();busy=false;
   }
   function centerThumb(i) {
-    // The CSS left value marks the center because each card translates by -50%.
-    const target=thumbButtons[i].offsetLeft-strip.clientWidth/2;
-    strip.scrollTo({left:Math.max(0,Math.min(strip.scrollWidth-strip.clientWidth,target)),behavior:reduced.matches?'instant':'smooth'});
+    cancelAnimationFrame(thumbFrame);
+    const start=strip.scrollLeft,loop=thumbLoop();
+    if(!loop)return;
+    const delta=((i*thumbPitch-start+loop/2)%loop+loop)%loop-loop/2;
+    if(reduced.matches){setThumbOffset(start+delta);syncScrollControl();return;}
+    const began=performance.now();
+    function slide(now){
+      const p=Math.min(1,(now-began)/480),eased=1-Math.pow(1-p,3);
+      setThumbOffset(start+delta*eased);syncScrollControl();
+      if(p<1)thumbFrame=requestAnimationFrame(slide);
+    }
+    thumbFrame=requestAnimationFrame(slide);
   }
   async function focus(i,fromThumb=false) {
     if(busy)return;
@@ -196,9 +250,11 @@
     const img=make('img');img.alt=art.name;img.loading='lazy';img.decoding='async';img.addEventListener('load',()=>placeCaption(figure));button.append(img);button.addEventListener('click',()=>focus(i));
     const caption=make('figcaption','',art.name+' ');caption.append(make('span','',String(i+1).padStart(2,'0')+' / '+String(data.arts.length).padStart(2,'0')));
     figure.style.setProperty('--float-duration',(5.3+i%4*.8)+'s');figure.style.setProperty('--float-delay',(-i*.67)+'s');figure.style.setProperty('--float-y',(7+i%3*3)+'px');figure.style.setProperty('--float-x',(i%2?-5:5)+'px');figure.append(button,caption);nodes.push(figure);
-    const thumb=make('button');thumb.type='button';thumb.setAttribute('aria-label','选择'+art.name);thumb.setAttribute('aria-pressed','false');
+    for(let cycle=0;cycle<(data.arts.length>1?3:1);cycle++){
+    const thumb=make('button');thumb.type='button';thumb.setAttribute('aria-label','选择'+art.name);thumb.setAttribute('aria-pressed','false');thumb.dataset.artIndex=String(i);thumb.dataset.slot=String(cycle*data.arts.length+i);
     const small=make('img');small.alt=art.name;small.width=360;small.height=260;setImageSource(small,art.thumb);
     thumb.title=art.name;thumb.dataset.number=String(i+1).padStart(2,'0');thumb.style.setProperty('--thumb-x',String(data.arts.length>1?i/(data.arts.length-1):.5));thumb.append(small);thumb.addEventListener('click',()=>focus(i,true));thumbButtons.push(thumb);
+    }
   });
   stage.replaceChildren(...nodes);const thumbOrbit=make('div','thumb-orbit');thumbOrbit.innerHTML='<svg class=thumb-arc viewBox="0 0 1200 240" preserveAspectRatio=none aria-hidden=true><path d="M25 20Q600 390 1175 20"/></svg>';thumbOrbit.append(...thumbButtons);strip.replaceChildren(thumbOrbit);
   scrollControl=make('div','gallery-scroll-control');
@@ -207,13 +263,15 @@
   strip.after(scrollControl);
   const scrollSvg=scrollControl.querySelector('svg');let drag=null;
   function arcFraction(event){const matrix=scrollSvg.getScreenCTM();if(!matrix)return 0;const point=new DOMPoint(event.clientX,event.clientY).matrixTransform(matrix.inverse());return Math.max(0,Math.min(1,(point.x-28)/744));}
-  function moveArc(event){const fraction=strip.clientWidth/strip.scrollWidth,range=strip.scrollWidth-strip.clientWidth;if(range<=1)return;const progress=(arcFraction(event)-(drag?.offset||0)-fraction/2)/(1-fraction);strip.scrollLeft=Math.max(0,Math.min(1,progress))*range;syncScrollControl();}
-  scrollSvg.addEventListener('pointerdown',event=>{if(event.button!==0)return;const range=strip.scrollWidth-strip.clientWidth,fraction=strip.clientWidth/strip.scrollWidth;const center=(range?strip.scrollLeft/range:0)*(1-fraction)+fraction/2;drag={id:event.pointerId,offset:event.target.classList.contains('arc-scroll-thumb')?arcFraction(event)-center:0};scrollSvg.setPointerCapture(event.pointerId);moveArc(event);event.preventDefault();});
+  function moveArc(event){cancelAnimationFrame(thumbFrame);const loop=thumbLoop(),fraction=strip.clientWidth/(strip.clientWidth+loop),range=(data.arts.length-1)*thumbPitch;if(range<=1)return;const progress=(arcFraction(event)-(drag?.offset||0)-fraction/2)/(1-fraction);setThumbOffset(loop+Math.max(0,Math.min(1,progress))*range);syncScrollControl();}
+  scrollSvg.addEventListener('pointerdown',event=>{if(event.button!==0)return;const loop=thumbLoop(),range=(data.arts.length-1)*thumbPitch,fraction=strip.clientWidth/(strip.clientWidth+loop),phase=((strip.scrollLeft%loop)+loop)%loop;const center=(range?Math.min(1,phase/range):0)*(1-fraction)+fraction/2;drag={id:event.pointerId,offset:event.target.classList.contains('arc-scroll-thumb')?arcFraction(event)-center:0};scrollSvg.setPointerCapture(event.pointerId);moveArc(event);event.preventDefault();});
   scrollSvg.addEventListener('pointermove',event=>{if(drag?.id===event.pointerId)moveArc(event);});
   for(const type of ['pointerup','pointercancel','lostpointercapture'])scrollSvg.addEventListener(type,()=>{drag=null;});
-  scrollSvg.addEventListener('keydown',event=>{const range=strip.scrollWidth-strip.clientWidth;const moves={ArrowLeft:-range*.1,ArrowRight:range*.1,PageUp:-strip.clientWidth*.8,PageDown:strip.clientWidth*.8};if(event.key==='Home')strip.scrollLeft=0;else if(event.key==='End')strip.scrollLeft=range;else if(event.key in moves)strip.scrollLeft+=moves[event.key];else return;event.preventDefault();syncScrollControl();});
-  strip.addEventListener('scroll',syncScrollControl,{passive:true});new ResizeObserver(syncScrollControl).observe(strip);
-  layout();document.querySelector('.gallery').classList.add('enhanced');
+  scrollSvg.addEventListener('keydown',event=>{cancelAnimationFrame(thumbFrame);const range=(data.arts.length-1)*thumbPitch,loop=thumbLoop();const moves={ArrowLeft:-thumbPitch,ArrowRight:thumbPitch,PageUp:-strip.clientWidth*.8,PageDown:strip.clientWidth*.8};if(event.key==='Home')setThumbOffset(loop);else if(event.key==='End')setThumbOffset(loop+range);else if(event.key in moves)setThumbOffset(strip.scrollLeft+moves[event.key]);else return;event.preventDefault();syncScrollControl();});
+  strip.addEventListener('scroll',()=>{setThumbOffset(strip.scrollLeft);syncScrollControl();},{passive:true});
+  strip.addEventListener('pointerdown',()=>cancelAnimationFrame(thumbFrame),{passive:true});strip.addEventListener('wheel',()=>cancelAnimationFrame(thumbFrame),{passive:true});
+  new ResizeObserver(()=>{if(!busy)layout();}).observe(strip);
+  document.querySelector('.gallery').classList.add('enhanced');layout();
   addEventListener('resize',()=>{if(!busy)layout();});
   const gallery=document.querySelector('.gallery');let galleryVisible=false;
   document.querySelector('.orbit-next').addEventListener('click',rotateOrbit);
