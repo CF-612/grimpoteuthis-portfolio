@@ -12,6 +12,16 @@ window.portfolioData = {
       "tags": [
         "生存",
         "潜行"
+      ],
+      "recognition": [
+        {
+          "label": "参赛",
+          "text": "2025 聚光灯 48 小时 GameJam 成都场"
+        },
+        {
+          "label": "参展",
+          "text": "入选 2026 TapTap 年度颁奖典礼参展游戏"
+        }
       ]
     },
     {
@@ -26,6 +36,12 @@ window.portfolioData = {
       "tags": [
         "益智",
         "物理解谜"
+      ],
+      "recognition": [
+        {
+          "label": "荣誉",
+          "text": "2026 Global Game Jam 北京 ACG 站 · 现场人气投票第一名"
+        }
       ]
     },
     {
@@ -54,6 +70,12 @@ window.portfolioData = {
       "tags": [
         "修复",
         "科普"
+      ],
+      "recognition": [
+        {
+          "label": "奖项",
+          "text": "2026 计算机设计大赛省赛三等奖"
+        }
       ]
     },
     {
@@ -67,6 +89,12 @@ window.portfolioData = {
       "link": "games/arsenal.html",
       "tags": [
         "反套路经营"
+      ],
+      "recognition": [
+        {
+          "label": "奖项",
+          "text": "腾讯游戏高校极限开发赛事优胜奖"
+        }
       ]
     },
     {

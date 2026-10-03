@@ -427,3 +427,8 @@ a.game-image:focus-visible { outline: 2px solid #a67d99; outline-offset: 5px; }
 .gallery-thumbs.dragging button.active:hover { transform: translateX(-50%) rotate(var(--thumb-angle)) scale(1.2); }
 .mailbox-hint-label { display: block; transform: translateX(-.7em); }
 @media (max-width: 700px) { .mailbox-hint-label { transform: translateX(-.35em); } }
+
+.project-recognition { display: grid; gap: 9px; margin: 20px 0; padding: 15px 18px; border: 1px solid #decbd0; border-radius: 12px; background: #f8efe4; }
+.project-recognition>div { display: grid; grid-template-columns: 3em minmax(0,1fr); gap: 12px; align-items: baseline; }
+.project-recognition dt { margin: 0; font: 12px/1.8 'Microsoft YaHei',sans-serif; color: #a07887; }
+.project-recognition dd { margin: 0; font: 14px/1.8 'Microsoft YaHei',sans-serif; color: #795c6b; overflow-wrap: anywhere; }

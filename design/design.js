@@ -62,6 +62,11 @@
     if(game.link){const link=make('a','game-title-link',game.name);link.href=game.link;title.append(link);}
     else title.textContent=game.name;
     content.append(title, make('p', '', game.summary));
+    if(game.recognition?.length){
+      const recognition=make('dl','project-recognition');recognition.setAttribute('aria-label','赛事与荣誉');
+      game.recognition.forEach(({label,text})=>{const row=make('div');row.append(make('dt','',label),make('dd','',text));recognition.append(row);});
+      content.append(recognition);
+    }
     const tags = make('dl', 'project-tags');
     [['我的角色', game.role], ['团队规模', game.team], ['引擎 / 平台', game.platform]].forEach(([label,value]) => {
       const row = make('div'); row.append(make('dt', '', label), make('dd', '', value || '待核对')); tags.append(row);
