@@ -9,7 +9,13 @@ let origin='';if(configuredOrigin){const u=new URL(configuredOrigin);if(!['https
 const escape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function copyTree(from,to){fs.mkdirSync(to,{recursive:true});for(const entry of fs.readdirSync(from,{withFileTypes:true})){const a=path.join(from,entry.name),b=path.join(to,entry.name);if(entry.isDirectory())copyTree(a,b);else if(entry.isFile())fs.copyFileSync(a,b);else throw new Error('Unexpected non-file entry: '+a);}}
 function replaceOnce(html,needle,replacement){if(html.split(needle).length!==2)throw new Error('Expected one template marker: '+needle);return html.replace(needle,replacement);}
-function shareMeta(html,title,description,image,page){const absolute=p=>origin?new URL(p,origin).href:p;const imagePath=origin?absolute(image):(page.startsWith('games/')?'../':'')+image;const canonical=origin?'<link rel="canonical" href="'+escape(absolute(page))+'"><meta property="og:url" content="'+escape(absolute(page))+'">':'';return replaceOnce(html,'</head>',`<meta property="og:type" content="website"><meta property="og:site_name" content="烟灰蛸"><meta property="og:title" content="${escape(title)}"><meta property="og:description" content="${escape(description)}"><meta property="og:image" content="${escape(imagePath)}"><meta name="twitter:card" content="summary_large_image">${canonical}</head>`);}
+function shareMeta(html,title,description,image,page,imageDetails){
+  const absolute=p=>origin?new URL(p,origin).href:p;
+  const imagePath=origin?absolute(image):(page.startsWith('games/')?'../':'')+image;
+  const canonical=origin?'<link rel="canonical" href="'+escape(absolute(page))+'"><meta property="og:url" content="'+escape(absolute(page))+'">':'';
+  const details=imageDetails?`<meta property="og:image:type" content="${escape(imageDetails.type)}"><meta property="og:image:width" content="${imageDetails.width}"><meta property="og:image:height" content="${imageDetails.height}"><meta property="og:image:alt" content="${escape(imageDetails.alt)}">`:'';
+  return replaceOnce(html,'</head>',`<meta property="og:type" content="website"><meta property="og:site_name" content="烟灰蛸"><meta property="og:title" content="${escape(title)}"><meta property="og:description" content="${escape(description)}"><meta property="og:image" content="${escape(imagePath)}">${details}<meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="${escape(imagePath)}">${canonical}</head>`);
+}
 // dist is generated output. Refuse redirects before removing an old build.
 if(fs.existsSync(target)){if(fs.realpathSync(target)!==target)throw new Error('Release directory must not be a symlink');fs.rmSync(target,{recursive:true,force:true});}
 fs.mkdirSync(target,{recursive:true});
@@ -22,7 +28,10 @@ const description='烟灰蛸的个人作品集，游戏策划与绘画。';
 html=replaceOnce(html,'<title>烟灰蛸</title>','<title>烟灰蛸</title><meta name="description" content="'+description+'"><meta name="theme-color" content="#fff9ef"><link rel="icon" href="assets/octopus.png?v=18">');
 if((html.match(/<div class="archive-tabs"/g)||[]).length!==1)throw new Error('Missing archive navigation marker');
 html=html.replace(/(<div class="archive-tabs"[^>]*>).*?<\/div>/s,'$1'+data.games.map(g=>'<a href="'+escape(g.link)+'">'+escape(g.name)+'</a>').join('')+'</div>');
-html=shareMeta(html,'烟灰蛸 · 游戏策划与绘画作品集',description,'assets/authored/hero-painted-mobile-v11.webp','index.html');
+html=shareMeta(html,'烟灰蛸 · 游戏策划与绘画作品集',description,'assets/authored/share-cover-v1.jpg','index.html',{
+  type:'image/jpeg',width:1200,height:630,
+  alt:'烟灰蛸 · 游戏策划与绘画作品集，奶油粉色背景、烟灰蛸字标与粉发人物插画'
+});
 fs.writeFileSync(path.join(target,'index.html'),html);
 fs.mkdirSync(path.join(target,'games'),{recursive:true});
 for(const game of data.games){let content=fs.readFileSync(path.join(source,game.link),'utf8');content=replaceOnce(content,'</head>','<link rel="icon" href="../assets/octopus.png?v=18"></head>');content=shareMeta(content,game.name+' · 烟灰蛸',game.summary,game.cover,game.link);fs.writeFileSync(path.join(target,game.link),content);}

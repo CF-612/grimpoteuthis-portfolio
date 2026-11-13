@@ -30,6 +30,12 @@ npx wrangler pages deploy dist --project-name grimpoteuthis --branch main
 
 也可将构建后的 `dist/` 文件夹拖入现有 Pages 项目的部署页面。不要上传整个源码仓库或作者的原稿目录。
 
+## 分享预览封面
+
+首页的 Open Graph 和 Twitter 分享图片使用 `design/assets/authored/share-cover-v1.jpg`（1200 × 630，不透明 JPEG）。它独立于网页中的透明人物素材，避免链接卡片出现黑底和不合适的裁切。
+
+封面由现有字标、人物、云朵和字体排版生成。需要重新导出时，使用已安装的图片制作工具 sharp：`node scripts/render-share-cover.cjs <sharp模块的绝对路径>`。修改封面后使用新文件名，并同步更新 `build-local-release.cjs` 中首页的图片地址，再检查、构建、发布。Milanote 中已有卡片若仍显示旧图，可手动拖入新封面替换。
+
 ## 更换网址
 
 `site.config.json` 的 `publicOrigin` 已设置为当前生产地址。更换网址后更新它，再构建和发布；也可以用 `PORTFOLIO_SITE_ORIGIN` 临时覆盖。该设置用于生成规范网址和分享卡片的绝对图片地址。

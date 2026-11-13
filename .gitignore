@@ -17,6 +17,7 @@
 !/design/
 /scripts/*
 !/scripts/check-release.cjs
+!/scripts/render-share-cover.cjs
 /design/*
 !/design/index-v2.html
 !/design/finalize-preview.cjs
